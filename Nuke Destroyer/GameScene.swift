@@ -128,6 +128,46 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // ------------------------------------------------------------------------------------------
     
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        switch gameState {
+            case .showingLogo, .gameOver:
+                for touch in touches {
+                    if (touch == playButtonTouch) {
+                        playButtonTouch = nil
+                        // unshrink the button to animate it being touched
+                        let unShrink = SKAction.scale(by: 1.0/0.9, duration: 0.0)
+                        playButton.run(unShrink)
+                        if playButton.contains(touch.location(in: self)) {
+                            if (developerButtonTouch != nil) {
+                                developerButton.run(unShrink)
+                                developerButtonTouch = nil
+                            }
+                        }
+                    } else if (touch == developerButtonTouch) {
+                        developerButtonTouch = nil
+                        // unshrink the button to animate it being touched
+                        let unShrink = SKAction.scale(by: 1.0/0.9, duration: 0.0)
+                        developerButton.run(unShrink)
+                        if developerButton.contains(touch.location(in: self)) {
+                            if (playButtonTouch != nil) {
+                                playButton.run(unShrink)
+                                playButtonTouch = nil
+                            }
+                        }
+                    }
+                }
+            
+            case .playing:
+                for touch in touches {
+                    print("touch cacnelled")
+                    print(touch)
+                    if (touch == leftTouch) { leftTouch = nil }
+                    if (touch == rightTouch) { rightTouch = nil}
+            }
+        }
+    }
+    // ------------------------------------------------------------------------------------------
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         // check the game state
@@ -141,11 +181,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         let unShrink = SKAction.scale(by: 1.0/0.9, duration: 0.0)
                         playButton.run(unShrink)
                         if playButton.contains(touch.location(in: self)) {
-                            released(playButton)
                             if (developerButtonTouch != nil) {
                                 developerButton.run(unShrink)
                                 developerButtonTouch = nil
                             }
+                            released(playButton)
                         }
                     } else if (touch == developerButtonTouch) {
                         developerButtonTouch = nil
@@ -153,11 +193,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         let unShrink = SKAction.scale(by: 1.0/0.9, duration: 0.0)
                         developerButton.run(unShrink)
                         if developerButton.contains(touch.location(in: self)) {
-                            released(developerButton)
                             if (playButtonTouch != nil) {
                                 playButton.run(unShrink)
                                 playButtonTouch = nil
                             }
+                            released(developerButton)
                         }
                     }
                 }
@@ -176,6 +216,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         
+        
         if let touch = leftTouch {
             move(turret1, toward: touch.location(in: self))
             shootBullet(from: turret1, towards: touch.location(in: self))
@@ -186,7 +227,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             shootBullet(from: turret2, towards: touch.location(in: self))
         }
         
-        print(UIApplication.shared.statusBarOrientation.isLandscape)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -661,6 +701,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         } else if (name == "developerButton") {
             // change the view to the developer info stuff
+            //self.isPaused = true
             viewController.developerButtonTapped()
         }
         

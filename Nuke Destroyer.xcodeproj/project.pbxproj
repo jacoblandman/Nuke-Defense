@@ -87,6 +87,8 @@
 		AE3B55741E1324D70022F068 /* technicalexperience4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55691E1324D70022F068 /* technicalexperience4.jpg */; };
 		AE3B55751E1324D70022F068 /* technicalexperience5.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B556A1E1324D70022F068 /* technicalexperience5.jpg */; };
 		AE3B55771E1330600022F068 /* NavigationControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B55761E1330600022F068 /* NavigationControllerExtension.swift */; };
+		AE3B55791E14449D0022F068 /* tutorialCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */; };
+		AE3B557B1E145D430022F068 /* disclosureAccessory@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B557A1E145D430022F068 /* disclosureAccessory@3x.png */; };
 		AE6548AF1E085E7C008784E8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6548AE1E085E7C008784E8 /* AppDelegate.swift */; };
 		AE6548B31E085E7C008784E8 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE6548B21E085E7C008784E8 /* Actions.sks */; };
 		AE6548B51E085E7C008784E8 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6548B41E085E7C008784E8 /* GameScene.swift */; };
@@ -248,6 +250,8 @@
 		AE3B55691E1324D70022F068 /* technicalexperience4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = technicalexperience4.jpg; sourceTree = "<group>"; };
 		AE3B556A1E1324D70022F068 /* technicalexperience5.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = technicalexperience5.jpg; sourceTree = "<group>"; };
 		AE3B55761E1330600022F068 /* NavigationControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControllerExtension.swift; sourceTree = "<group>"; };
+		AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tutorialCollectionViewCell.swift; sourceTree = "<group>"; };
+		AE3B557A1E145D430022F068 /* disclosureAccessory@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "disclosureAccessory@3x.png"; sourceTree = "<group>"; };
 		AE6548AB1E085E7C008784E8 /* Nuke Destroyer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nuke Destroyer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE6548AE1E085E7C008784E8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE6548B21E085E7C008784E8 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -356,6 +360,7 @@
 				AE3B54ED1E1323C60022F068 /* dataTableViewCell.swift */,
 				AE3B552B1E13242F0022F068 /* detailViewController.swift */,
 				AE3B54E41E1323AD0022F068 /* ViewController.swift */,
+				AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */,
 				AE3B54F01E1323D00022F068 /* HidingNavigationBarManager.swift */,
 				AE3B54F11E1323D00022F068 /* HidingViewController.swift */,
 				AE3B54F21E1323D00022F068 /* InitialViewController.swift */,
@@ -366,6 +371,7 @@
 		AE3B54F61E1323EB0022F068 /* Icons and PDFs */ = {
 			isa = PBXGroup;
 			children = (
+				AE3B557A1E145D430022F068 /* disclosureAccessory@3x.png */,
 				AE3B54F71E1323F80022F068 /* bell-7.png */,
 				AE3B54F81E1323F80022F068 /* bell-off-7.png */,
 				AE3B54F91E1323F80022F068 /* list-fat-7.png */,
@@ -689,6 +695,7 @@
 				AE3B54FC1E1323F80022F068 /* bell-7.png in Resources */,
 				AE3B54DE1E1300F80022F068 /* DeveloperButton@3x.png in Resources */,
 				AE6549151E089742008784E8 /* turret_1_14.png in Resources */,
+				AE3B557B1E145D430022F068 /* disclosureAccessory@3x.png in Resources */,
 				AE3B55341E1324AC0022F068 /* awards0.jpg in Resources */,
 				AE3B54FE1E1323F90022F068 /* list-fat-7.png in Resources */,
 				AE6549361E08974D008784E8 /* turret_2_5.png in Resources */,
@@ -845,6 +852,7 @@
 				AE3B54EB1E1323BE0022F068 /* ResumeViewController.swift in Sources */,
 				AE3B54F31E1323D00022F068 /* HidingNavigationBarManager.swift in Sources */,
 				AE6548AF1E085E7C008784E8 /* AppDelegate.swift in Sources */,
+				AE3B55791E14449D0022F068 /* tutorialCollectionViewCell.swift in Sources */,
 				AE65498B1E09ED27008784E8 /* Helper.swift in Sources */,
 				AE3B54EF1E1323C60022F068 /* dataTableViewCell.swift in Sources */,
 				AE3B54F41E1323D00022F068 /* HidingViewController.swift in Sources */,
