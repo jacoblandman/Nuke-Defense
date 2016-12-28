@@ -12,23 +12,38 @@ import GameplayKit
 enum GameState {
     case showingLogo
     case playing
-    case dead
+    case gameOver
+}
+
+enum CollisionTypes: UInt32 {
+    case bullet = 1
+    case bomb = 2
+    case floor = 4
 }
 
 class turret: SKSpriteNode {
     var canFire: Bool = true
 }
 
+class button: SKSpriteNode {
+    var touched: Bool = false
+}
 
-class GameScene: SKScene {
+
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // PARAMETERS
     // ------------------------------------------------------------------------------------------
+    weak var viewController: GameViewController!
     var logo: SKSpriteNode!
+    var playButton: SKSpriteNode!
+    var developerButton: SKSpriteNode!
     var gameScore: SKLabelNode!
+    var background: SKSpriteNode!
     var score: Int = 0 {
         didSet {
             gameScore.text = "Score: \(score)"
+            if (score > highScore) { highScore = score }
         }
     }
     var highScoreLabel: SKLabelNode!
@@ -47,44 +62,35 @@ class GameScene: SKScene {
     
     var bombs = [SKSpriteNode]()
     
+    var floor: SKSpriteNode!
+    
     var scale: CGFloat!
-    var lives = 3
     var releaseTime = 2.0
     let floorReleaseTime: Double = 0.35
+    var bulletNumber = RandomInt(min: 0, max: 2)
     
     var leftTouch: UITouch?
     var rightTouch: UITouch?
+    var playButtonTouch: UITouch?
+    var developerButtonTouch: UITouch?
     
-    var touchPositionLeft: CGPoint?
-    var touchPositionRight: CGPoint?
-    var canFire: Bool = true
-    var touchingScreen: Bool = false
     var gameState = GameState.showingLogo
     
     // METHODS
     // ------------------------------------------------------------------------------------------
     override func didMove(to view: SKView) {
         
-        let height = scene!.size.height
-        let width = scene!.size.width
-        scene?.anchorPoint = CGPoint(x: 0.0, y: 0.0)
-        
-        // load the background image
-        let background = SKSpriteNode(imageNamed: "Background")
-        let backgroundSize = background.size
-        scale = max(width / backgroundSize.width, height / backgroundSize.height)
-        background.size = CGSize(width: backgroundSize.width * scale, height: backgroundSize.height * scale)
-        background.position = CGPoint(x: width / 2.0 , y: height / 2.0)
-        background.zPosition = -1
-        addChild(background)
-        
+        // set the gravity and speed for the game
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -1.0)
         physicsWorld.speed = 0.55
+        physicsWorld.contactDelegate = self
         
+        // load the background, logos, scores, turrets, and start releasing bombs
+        loadBackground()
         createLogo()
         loadScores()
         createTurrets()
-        releaseBombs()
+        createFloor()
     }
     
     // ------------------------------------------------------------------------------------------
@@ -92,62 +98,95 @@ class GameScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
+        // check the game state
         switch gameState {
-            case .showingLogo:
-                gameState = .playing
-                
-                let fadeOut = SKAction.fadeOut(withDuration: 0.5)
-                let remove = SKAction.removeFromParent()
-                let wait = SKAction.wait(forDuration: 0.5)
-                let sequence = SKAction.sequence([fadeOut, remove, wait])
-                logo.run(sequence)
-            
-            case .playing:
-                touchingScreen = true
+            // if a touch happened while the logo is shoing then start the game
+            case .showingLogo, .gameOver:
                 guard let touch = touches.first else { return }
-                print(touches)
-                touchPositionLeft = touch.location(in: self)
+                if playButton.contains(touch.location(in: self)) {
+                    if playButtonTouch == nil {
+                        playButtonTouch = touch
+                        pressed(playButton)
+                    }
+                } else if developerButton.contains(touch.location(in: self)) {
+                    if developerButtonTouch == nil {
+                        developerButtonTouch = touch
+                        pressed(developerButton)
+                    }
+                }
             
-            case .dead:
-                return
-            
+            // if a touch happened while playing, set the left or right touch for controlling the turrets
+            case .playing:
+                guard let touch = touches.first else { return }
+                if touch.location(in: self).x < frame.size.width / 2 {
+                    if leftTouch == nil { leftTouch = touch }
+                } else {
+                    if rightTouch == nil { rightTouch = touch }
+                }
         }
-        
     }
     
     // ------------------------------------------------------------------------------------------
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        touchingScreen = false
-        print(touches)
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else { return }
-        touchPositionLeft = touch.location(in: self)
+        
+        // check the game state
+        switch gameState {
+        // if a touch happened while the logo is shoing then start the game
+            case .showingLogo, .gameOver:
+                for touch in touches {
+                    if (touch == playButtonTouch) {
+                        playButtonTouch = nil
+                        // unshrink the button to animate it being touched
+                        let unShrink = SKAction.scale(by: 1.0/0.9, duration: 0.0)
+                        playButton.run(unShrink)
+                        if playButton.contains(touch.location(in: self)) {
+                            released(playButton)
+                            if (developerButtonTouch != nil) {
+                                developerButton.run(unShrink)
+                                developerButtonTouch = nil
+                            }
+                        }
+                    } else if (touch == developerButtonTouch) {
+                        developerButtonTouch = nil
+                        // unshrink the button to animate it being touched
+                        let unShrink = SKAction.scale(by: 1.0/0.9, duration: 0.0)
+                        developerButton.run(unShrink)
+                        if developerButton.contains(touch.location(in: self)) {
+                            released(developerButton)
+                            if (playButtonTouch != nil) {
+                                playButton.run(unShrink)
+                                playButtonTouch = nil
+                            }
+                        }
+                    }
+                }
+                    
+            
+        // if a touch happened while playing, set the left or right touch for controlling the turrets
+            case .playing:
+                for touch in touches {
+                    if (touch == leftTouch) { leftTouch = nil }
+                    if (touch == rightTouch) { rightTouch = nil}
+                }
+        }
     }
     
     // ------------------------------------------------------------------------------------------
     
     override func update(_ currentTime: TimeInterval) {
-        if touchingScreen {
-            if let position = touchPositionLeft {
-                if position.x < (scene?.size.width)! / 2.0 {
-                    move(turret1, toward: position)
-                    move(turret2, toward: position)
-                    shootBullet(from: turret1, towards: position)
-                    shootBullet(from: turret2, towards: position)
-                } else {
-                    move(turret2, toward: position)
-                    move(turret1, toward: position)
-                    shootBullet(from: turret2, towards: position)
-                    shootBullet(from: turret1, towards: position)
-                }
-            }
-            
+        
+        if let touch = leftTouch {
+            move(turret1, toward: touch.location(in: self))
+            shootBullet(from: turret1, towards: touch.location(in: self))
         }
+        
+        if let touch = rightTouch {
+            move(turret2, toward: touch.location(in: self))
+            shootBullet(from: turret2, towards: touch.location(in: self))
+        }
+        
+        print(UIApplication.shared.statusBarOrientation.isLandscape)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -198,14 +237,12 @@ class GameScene: SKScene {
         
         let gunTexture = SKTexture(imageNamed: imageName.appending("_0"))
         turret1 = turret(texture: gunTexture)
-        //turret1 = SKSpriteNode(texture: gunTexture)
         scale(turret1, using: scale)
         turret1.anchorPoint = CGPoint(x: 0.5, y: 0.4059)
         turret1.position = (CGPoint(x: turret1Background.position.x, y: turret1Background.position.y))
         turret1.zPosition = 10
         
         turret2 = turret(texture: gunTexture)
-        //turret2 = SKSpriteNode(texture: gunTexture)
         scale(turret2, using: scale)
         turret2.anchorPoint = CGPoint(x: 0.5, y: 0.4059)
         turret2.position = (CGPoint(x: turret2Background.position.x, y: turret2Background.position.y))
@@ -262,11 +299,20 @@ class GameScene: SKScene {
             let velocity: Double = 1.5
             
             // create a bullet and added it to the scene
-            let bullet = SKSpriteNode(imageNamed: "Bullet0")
+            let bullet = SKSpriteNode(imageNamed: "Bullet".appending("\(bulletNumber)"))
             scale(bullet, using: scale)
             bullet.anchorPoint = CGPoint(x: 0.5, y: 0.0)
             bullet.position = startingPosition
+            bullet.name = "bullet"
+            // set the physics
+            bullet.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+            bullet.physicsBody = SKPhysicsBody(rectangleOf: bullet.size)
+            //bullet.physicsBody = SKPhysicsBody(texture: bullet.texture!, size: bullet.size)
+            bullet.physicsBody?.isDynamic = false
+            bullet.physicsBody!.categoryBitMask = CollisionTypes.bullet.rawValue
+            //bullet.physicsBody!.contactTestBitMask = CollisionTypes.bomb.rawValue
             addChild(bullet)
+            
             
             // actions the bullet will make
             let rotate = SKAction.rotate(toAngle: angle, duration: 0.0)
@@ -283,14 +329,6 @@ class GameScene: SKScene {
                 turret.canFire = true
             }
         }
-
-        
-//        let shootBulletAction = SKAction.run { [unowned self] in
-//            self.shootBullet(from: shootingPosition, at: turretCurrentAngle)
-//        }
-//        
-//        run(shootBulletAction)
-        
     }
     
     // ------------------------------------------------------------------------------------------
@@ -309,53 +347,28 @@ class GameScene: SKScene {
         let rotate = SKAction.rotate(toAngle: angle, duration: 0.1)
         turret.run(rotate)
     }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    func shootBullet(from startingPosition: CGPoint, at angle: CGFloat) {
-        
-        if (!canFire) { return } else {
-            canFire = false
-            
-            let phoneSize = view!.frame.size
-            let diagonal = sqrt(phoneSize.width * phoneSize.width + phoneSize.height * phoneSize.height)
-            
-            // set the bullets end position and velocity
-            let endPosition = CGPoint(x: startingPosition.x + diagonal*cos(CGFloat.pi / 2 + angle) , y: startingPosition.y + diagonal*sin(CGFloat.pi / 2 + angle))
-            let velocity: Double = 1.5
-            
-            // create a bullet and added it to the scene
-            let bullet = SKSpriteNode(imageNamed: "Bullet0")
-            scale(bullet, using: scale)
-            bullet.anchorPoint = CGPoint(x: 0.5, y: 0.0)
-            bullet.position = startingPosition
-            addChild(bullet)
-            
-            // actions the bullet will make
-            let rotate = SKAction.rotate(toAngle: angle, duration: 0.0)
-            let move = SKAction.move(to: endPosition, duration: 1.0 / velocity)
-            let removeBullet = SKAction.removeFromParent()
-            let sequence = SKAction.sequence([rotate, move, removeBullet])
-            
-            // make the bullet perform teh actions
-            bullet.run(sequence)
-            
-            // wait to enable fire
-            let waitToEnableFire = SKAction.wait(forDuration: 0.15)
-            run(waitToEnableFire) { [unowned self] in
-                self.canFire = true
-            }
-        }
-    }
-        
-    
+
     // ------------------------------------------------------------------------------------------
     
     func createLogo() {
         logo = SKSpriteNode(imageNamed: "Logo")
-        logo.anchorPoint = CGPoint(x: 0.5, y: 0.4)
-        logo.position = CGPoint(x: frame.midX, y: frame.midY)
+        logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+        logo.position = CGPoint(x: frame.midX, y: frame.midY + frame.height / 6)
         addChild(logo)
+        
+        let spacing: CGFloat = 15
+        playButton = SKSpriteNode(imageNamed: "PlayButton")
+        //playButton.anchorPoint = CGPoint(x: 0.0, y: 1.0)
+        playButton.position = CGPoint(x: logo.position.x - playButton.size.width * 0.5 - spacing, y: logo.position.y - (spacing + playButton.size.height * 0.5))
+        playButton.name = "playButton"
+        addChild(playButton)
+        
+        developerButton = SKSpriteNode(imageNamed: "DeveloperButton")
+        //developerButton.anchorPoint = CGPoint(x: 1.0, y: 1.0)
+        developerButton.position = CGPoint(x: logo.position.x + developerButton.size.width * 0.5 + spacing, y: logo.position.y - (spacing + playButton.size.height * 0.5))
+        developerButton.name = "developerButton"
+        addChild(developerButton)
+        
     }
     
     // ------------------------------------------------------------------------------------------
@@ -364,12 +377,15 @@ class GameScene: SKScene {
         
         let bomb = SKSpriteNode(imageNamed: "Bomb")
         scale(bomb, using: scale)
-        bomb.anchorPoint = CGPoint(x: 0.5, y: 0.0)
         let xPos = RandomCGFloat(min: Float(bomb.size.width), max: Float(frame.size.width - bomb.size.width))
-        bomb.position = CGPoint(x: xPos, y: frame.size.height)
-        bomb.physicsBody = SKPhysicsBody(texture: bomb.texture!, size: bomb.size)
+        bomb.position = CGPoint(x: xPos, y: frame.size.height + bomb.size.height * 0.5)
+        bomb.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        bomb.physicsBody = SKPhysicsBody(rectangleOf: bomb.size)
         bomb.physicsBody?.isDynamic = true
+        bomb.physicsBody!.categoryBitMask = CollisionTypes.bomb.rawValue
+        bomb.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue | CollisionTypes.floor.rawValue
         bomb.zPosition = 50
+        bomb.name = "bomb"
         addChild(bomb)
         bombs.append(bomb)
     }
@@ -389,17 +405,309 @@ class GameScene: SKScene {
             
             let nextReleaseTime = RandomDouble(min: minReleaseTime, max: maxReleaseTime)
             
-            print(nextReleaseTime)
+            //print(nextReleaseTime)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + nextReleaseTime) { [unowned self] in
                 self.releaseBombs()
             }
         } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [unowned self] in
-                self.releaseBombs()
+            return
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func loadBackground() {
+        let height = scene!.size.height
+        let width = scene!.size.width
+        scene?.anchorPoint = CGPoint(x: 0.0, y: 0.0)
+        
+        let blackRect = SKSpriteNode(color: UIColor.black, size: CGSize(width:width, height: height))
+        blackRect.position = CGPoint(x: frame.midX, y: frame.midY)
+        blackRect.zPosition = -2
+        addChild(blackRect)
+        
+        // load the background image
+        background = SKSpriteNode(imageNamed: "Background")
+        let backgroundSize = background.size
+        scale = max(width / backgroundSize.width, height / backgroundSize.height)
+        background.size = CGSize(width: backgroundSize.width * scale, height: backgroundSize.height * scale)
+        background.position = CGPoint(x: width / 2.0 , y: height / 2.0)
+        background.zPosition = -1
+        background.alpha = 0.5
+        addChild(background)
+
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func createFloor() {
+        
+        floor = SKSpriteNode(color: UIColor.red, size: CGSize(width: frame.size.width, height: 1))
+        floor.position = CGPoint(x: floor.size.width / 2, y: -floor.size.height / 2)
+        addChild(floor)
+        floor.physicsBody = SKPhysicsBody(rectangleOf: floor.size)
+        floor.physicsBody?.isDynamic = false
+        floor.physicsBody!.categoryBitMask = CollisionTypes.floor.rawValue
+        floor.name = "floor"
+        
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        
+        // check if the game ended
+        if contact.bodyA.node?.name == "floor" || contact.bodyB.node?.name == "floor" {
+            if contact.bodyA.node?.name == "bomb" {
+                gameState = .gameOver
+                endGame(from: contact.bodyA.node!)
+            } else if contact.bodyB.node?.name == "bomb" {
+                gameState = .gameOver
+                endGame(from: contact.bodyB.node!)
+            }
+        }
+        
+        // at this point if one of the bodies isn't a floor, then a bomb contacted a bullet
+        // but lets check to make sure
+        if contact.bodyA.node?.name == "bullet" || contact.bodyB.node?.name == "bullet" {
+            if contact.bodyA.node?.name == "bomb" {
+                if contact.bodyB.node?.parent != nil {
+                    collision(with: contact.bodyA.node!, by: contact.bodyB.node!)
+                }
+            } else if contact.bodyB.node?.name == "bomb" {
+                if contact.bodyA.node?.parent != nil {
+                    collision(with: contact.bodyB.node!, by: contact.bodyA.node!)
+                }
             }
         }
     }
     
     // ------------------------------------------------------------------------------------------
+    
+    func endGame(from bomb: SKNode) {
+        
+        leftTouch = nil
+        rightTouch = nil
+
+        animateBigExplosion(from: bomb)
+        // make the bomb that hit the ground have a big explosion
+        if let bomb_index = bombs.index(of: bomb as! SKSpriteNode) {
+            bombs.remove(at: bomb_index)
+        }
+        
+        // remove the rest of the bombs
+        let spriteSheet = SKTexture(imageNamed: "Four")
+        var frames = [SKTexture]()
+        let numFrames: CGFloat = 4
+        
+        // create all the sprite textures from the sprite sheet
+        // there should be 16
+        for y in (3...3) {
+            for x in (0...3) {
+                let rect = CGRect(x: CGFloat(x)/numFrames, y: CGFloat(y)/numFrames, width: 1/numFrames, height: 1/numFrames)
+                frames.append(SKTexture(rect: rect, in: spriteSheet))
+            }
+        }
+        
+        let remove = SKAction.removeFromParent()
+        // animate the explision and remove the node afterwards
+        let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.03)
+        let sequence = SKAction.sequence([bomb_explosion, remove])
+        
+        for remainingBomb in bombs {
+            // add the explosion sprite
+            let sprite = SKSpriteNode(texture: frames[0])
+            scale(sprite, using: scale)
+            sprite.position = remainingBomb.position
+            sprite.zPosition = 50
+            addChild(sprite)
+            sprite.run(sequence)
+            remainingBomb.run(remove)
+        }
+        
+        bombs.removeAll()
+        
+        showGameOverLogos()
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func collision(with bomb: SKNode, by bullet: SKNode) {
+        // check again that the node is a bomb
+        guard bomb.name == "bomb" else { return }
+        score += 1
+        
+        if let bomb_index = bombs.index(of: bomb as! SKSpriteNode) {
+            bombs.remove(at: bomb_index)
+        }
+        
+        // create the sequence of actions to take place
+        let remove = SKAction.removeFromParent()
+        
+        let spriteSheet = SKTexture(imageNamed: "Four")
+        var frames = [SKTexture]()
+        let numFrames: CGFloat = 4
+        
+        // create all the sprite textures from the sprite sheet
+        // there should be 16
+        for y in (2...3).reversed() {
+            for x in (0...3) {
+                let rect = CGRect(x: CGFloat(x)/numFrames, y: CGFloat(y)/numFrames, width: 1/numFrames, height: 1/numFrames)
+                frames.append(SKTexture(rect: rect, in: spriteSheet))
+            }
+        }
+        
+        // add the explosion sprite
+        let sprite = SKSpriteNode(texture: frames[0])
+        scale(sprite, using: scale)
+        sprite.position = bomb.position
+        sprite.zPosition = 50
+        addChild(sprite)
+        
+        // animate the explision and remove the node afterwards
+        let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.03)
+        let sequence = SKAction.sequence([bomb_explosion, remove])
+        
+        // run the actions
+        bomb.run(remove)
+        sprite.run(sequence)
+        bullet.run(remove)
+        
+        
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func animateBigExplosion(from bomb: SKNode) {
+        // create the sequence of actions to take place
+        let remove = SKAction.removeFromParent()
+        
+        let spriteSheet = SKTexture(imageNamed: "Five")
+        var frames = [SKTexture]()
+        let numFrames: CGFloat = 4
+        
+        // create all the sprite textures from the sprite sheet
+        // there should be 16
+        for y in (0...3).reversed() {
+            for x in (0...3) {
+                let rect = CGRect(x: CGFloat(x)/numFrames, y: CGFloat(y)/numFrames, width: 1/numFrames, height: 1/numFrames)
+                frames.append(SKTexture(rect: rect, in: spriteSheet))
+            }
+        }
+        
+        // add the explosion sprite
+        let sprite = SKSpriteNode(texture: frames[0])
+        var whiteSpace: CGFloat = 30
+        scale(sprite, using: scale)
+        scale(sprite, using: 2)
+        whiteSpace = whiteSpace * 2 * scale
+        sprite.position = CGPoint(x: frame.midX, y: sprite.size.height / 2 - whiteSpace)
+        sprite.zPosition = 50
+        addChild(sprite)
+
+        // animate the explision and remove the node afterwards
+        let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.05)
+        let sequence = SKAction.sequence([bomb_explosion, remove])
+        
+        bomb.run(remove)
+        sprite.run(sequence)
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func pressed(_ button: SKNode) {
+        let shrink = SKAction.scale(by: 0.9, duration: 0.0)
+        button.run(shrink)
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func released(_ button: SKNode) {
+        
+        let name = button.name!
+        if name == "playButton" {
+            
+            reset()
+            // create the actions to start the game
+            // move the buttons down
+            // move the logo up
+            // remove the logo
+            // fade the background alpha
+            let moveDown = SKAction.moveTo(y: 0.0 - playButton.size.height, duration: 0.2)
+            let moveUp = SKAction.moveTo(y: frame.size.height + logo.size.height, duration: 0.2)
+            let remove = SKAction.removeFromParent()
+            let wait = SKAction.wait(forDuration: 0.2)
+            let fadeAlpha = SKAction.fadeAlpha(to: 1.0, duration: 0.2)
+            let moveLogo = SKAction.run { [unowned self] in
+                self.logo.run(SKAction.sequence([moveUp, remove, wait]))
+            }
+            let fadeBackground = SKAction.run{ [unowned self] in
+                self.background.run(fadeAlpha)
+            }
+            playButton.run(SKAction.sequence([moveDown, wait]))
+            developerButton.run(SKAction.sequence([moveDown, wait, moveLogo, fadeBackground]))
+            
+            // set the gameState to playing and release the bombs
+            gameState = .playing
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
+                self.releaseBombs()
+                
+                // create the playAgain button and the Game Over logo
+                self.createEndGameLogos()
+            }
+            
+            
+            
+        } else if (name == "developerButton") {
+            // change the view to the developer info stuff
+            viewController.developerButtonTapped()
+        }
+        
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func createEndGameLogos() {
+        playButton.texture = SKTexture(imageNamed: "PlayAgainButton")
+        logo = SKSpriteNode(imageNamed: "GameOverLogo")
+        logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+        logo.position = CGPoint(x: frame.midX, y: frame.size.height + logo.size.height)
+        logo.zPosition = 50
+        addChild(logo)
+        
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func showGameOverLogos() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
+            let logoPosition = self.frame.midY + self.frame.height / 6
+            let spacing: CGFloat = 15
+            let moveDown = SKAction.moveTo(y: logoPosition, duration: 0.2)
+            let moveUp = SKAction.moveTo(y: logoPosition - (spacing + self.playButton.size.height * 0.5), duration: 0.2)
+            let fadeAlpha = SKAction.fadeAlpha(to: 0.5, duration: 0.2)
+            let wait = SKAction.wait(forDuration: 0.2)
+            let moveLogo = SKAction.run { [unowned self] in
+                self.logo.run(moveDown)
+            }
+            let moveButtons = SKAction.run { [unowned self] in
+                self.developerButton.run(moveUp)
+                self.playButton.run(moveUp)
+            }
+            
+            self.background.run(SKAction.sequence([fadeAlpha, wait, moveLogo, wait, moveButtons]))
+            
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func reset() {
+        score = 0
+        releaseTime = 2.0
+        bulletNumber = RandomInt(min: 0, max: 2)
+    }
+    
+    
 }

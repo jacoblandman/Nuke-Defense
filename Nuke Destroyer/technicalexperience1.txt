@@ -1,0 +1,1 @@
+Implemented an exponentially converging Monte Carlo algorithm into a thermal radiation transport production level code using C++.
