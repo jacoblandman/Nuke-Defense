@@ -62,22 +62,21 @@ class GameViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.landscapeOnly = true // or false to disable rotation
-        let value = UIInterfaceOrientation.landscapeLeft.rawValue
-        UIDevice.current.setValue(value, forKey: "orientation")
+        navigationController?.hidesBarsOnSwipe = false
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+        currentGame.isPaused = false
+        currentGame.leftTouch = nil
+        currentGame.rightTouch = nil
+        currentGame.playButtonTouch = nil
+        currentGame.developerButtonTouch = nil
     }
     
-    @IBAction func unwind(segue:UIStoryboardSegue) {
-    }
-    
-    func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
-        return .portrait
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        currentGame.isPaused = true
     }
     
 }

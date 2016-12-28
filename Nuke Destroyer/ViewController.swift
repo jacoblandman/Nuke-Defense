@@ -11,7 +11,7 @@ import SafariServices
 import CoreSpotlight
 import MobileCoreServices
 
-class ViewController: UITableViewController, UIViewControllerPreviewingDelegate, SFSafariViewControllerDelegate {
+class ViewController: UICollectionViewController, UIViewControllerPreviewingDelegate, SFSafariViewControllerDelegate, UICollectionViewDelegateFlowLayout {
     
     // PARAMETERS
     // ------------------------------------------------------------------------------------------
@@ -29,6 +29,14 @@ class ViewController: UITableViewController, UIViewControllerPreviewingDelegate,
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         fillProjectsArray()
+        
+        collectionView?.backgroundColor = UIColor.lightGray
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+        //layout.itemSize = CGSize(width: screenWidth/3, height: screenWidth/3)
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 1
+        collectionView!.collectionViewLayout = layout
         
         // load UserDefaults if it exists there already
         let defaults = UserDefaults.standard
@@ -85,26 +93,40 @@ class ViewController: UITableViewController, UIViewControllerPreviewingDelegate,
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return projects.count
     }
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! tutorialCollectionViewCell   
         
-        let project = projects[indexPath.row]
+        print(indexPath.item)
+        let project = projects[indexPath.item]
         cell.textLabel?.attributedText = makeAttributedString(title: project[0], subtitle: project[1])
+        // add a border
+        cell.layer.borderColor = UIColor.gray.cgColor
+        cell.backgroundColor = UIColor.white
         
+        cell.disclosureIndicator.image = UIImage(named: "disclosureAccessory")
+        if indexPath.item == 39 {
+            cell.disclosureIndicator.image = nil
+        }
+        
+        //cell.layer.borderWidth = 2
         return cell
+    }
+    
+    func collectionView(_ collectionView: UITableViewCell, didSelectItemAt indexPath: IndexPath) {
+        showTutorial(indexPath.item)
     }
     
     // ------------------------------------------------------------------------------------------
     // the following two functions make sure auto layout does the hard work for us to automatically size every cell
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        // nav height shoudl be 44
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let navHeight: CGFloat
         if let nc = navigationController {
             navHeight = nc.navigationBar.frame.size.height
@@ -113,22 +135,8 @@ class ViewController: UITableViewController, UIViewControllerPreviewingDelegate,
             navHeight = 44
         }
 
-        return (tableView.frame.size.height - navHeight) / 5.0
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        // nav height shoudl be 44
-        let navHeight: CGFloat
-        if let nc = navigationController {
-            navHeight = nc.navigationBar.frame.size.height
-        } else {
-            print("the nav controller is nil")
-            navHeight = 44
-        }
-
-        return (tableView.frame.size.height - navHeight) / 5.0
+        
+        return CGSize(width: collectionView.frame.width * 0.5 - 1.5, height: (collectionView.frame.height - navHeight) * 0.5 - 1.0)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -173,6 +181,7 @@ class ViewController: UITableViewController, UIViewControllerPreviewingDelegate,
         projects.append(["Project 37: Psychic Tester", "CAEmitterLayer, CAGradientLayer, @IBDesignable, @IBInspectable, 3D card flip effect, 3D Touch, WCSession, watchOS app"])
         projects.append(["Project 38: GitHub Commits", "Core Data, NSFetchRequest, NSManagedObject, NSPredicate, NSSortDescriptor, NSFetchedResultsController"])
         projects.append(["Project 39: Unit testing with XCTest", "filter(), measure(), functions as parameters, user interface testing with XCTest"])
+        projects.append(["", ""])
     }
     
     // ------------------------------------------------------------------------------------------
@@ -210,8 +219,29 @@ class ViewController: UITableViewController, UIViewControllerPreviewingDelegate,
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        showTutorial(indexPath.row)
+    override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath)
+        print(cell?.center)
+        UIView.animate(withDuration: 0.1) { [] in
+                cell?.backgroundColor = UIColor.clear
+            }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath)
+        UIView.animate(withDuration: 0.1) { [] in
+            cell?.backgroundColor = UIColor.white
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        showTutorial(indexPath.item)
+        //collectionView.deselectItem(at: indexPath, animated: true)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -248,19 +278,23 @@ class ViewController: UITableViewController, UIViewControllerPreviewingDelegate,
     // ------------------------------------------------------------------------------------------
     
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        guard let indexPath = tableView.indexPathForRow(at: location) else { return nil }
+        
+        let convertedPoint = collectionView?.convert(location, from: self.view)
+        guard let indexPath = collectionView?.indexPathForItem(at: convertedPoint!) else { return nil }
         previewIndexPath = indexPath
+    
+        guard let cell = collectionView?.cellForItem(at: indexPath) else { return nil }
         
-        guard let cell = tableView.cellForRow(at: indexPath) else { return nil }
-        
-        if let url = URL(string: "https://www.hackingwithswift.com/read/\(indexPath.row + 1)") {
+        print(indexPath.item)
+        if let url = URL(string: "https://www.hackingwithswift.com/read/\(indexPath.item + 1)") {
             let vc = SFSafariViewController(url: url, entersReaderIfAvailable: true)
             let navController = UINavigationController(rootViewController: vc)
             vc.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismiss as () -> Void))
             vc.navigationController?.isNavigationBarHidden = true
             vc.delegate = self
             // is this the correct frame size?
-            previewingContext.sourceRect = cell.frame
+            let rect = collectionView?.convert(cell.frame, to: collectionView?.superview)
+            previewingContext.sourceRect = rect!
             safariViewController = vc
             return navController
         } else {
@@ -312,10 +346,19 @@ class ViewController: UITableViewController, UIViewControllerPreviewingDelegate,
         safariViewController = nil
     }
     
+    // ------------------------------------------------------------------------------------------
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = false
     }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
 }
 
 
