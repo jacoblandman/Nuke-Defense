@@ -47,6 +47,7 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
         super.viewWillAppear(animated)
         
         navigationController?.isNavigationBarHidden = false
+        navigationController?.hidesBarsOnSwipe = false
     }
     
     override func viewDidAppear(_ animated: Bool) {

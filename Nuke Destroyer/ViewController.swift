@@ -103,16 +103,16 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! tutorialCollectionViewCell   
         
-        print(indexPath.item)
+        // set the text and background color
         let project = projects[indexPath.item]
         cell.textLabel?.attributedText = makeAttributedString(title: project[0], subtitle: project[1])
-        // add a border
-        cell.layer.borderColor = UIColor.gray.cgColor
         cell.backgroundColor = UIColor.white
         
+        // add the disclosure accessory. Have to do this manually because the collection view cell doesn't have this
         cell.disclosureIndicator.image = UIImage(named: "disclosureAccessory")
         if indexPath.item == 39 {
             cell.disclosureIndicator.image = nil
+            //cell.isUserInteractionEnabled = false
         }
         
         //cell.layer.borderWidth = 2
@@ -221,7 +221,6 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
     
     override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath)
-        print(cell?.center)
         UIView.animate(withDuration: 0.1) { [] in
                 cell?.backgroundColor = UIColor.clear
             }
@@ -278,7 +277,7 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
     // ------------------------------------------------------------------------------------------
     
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        
+        // convert the point to the collection view coordinate system to get teh coorect index path
         let convertedPoint = collectionView?.convert(location, from: self.view)
         guard let indexPath = collectionView?.indexPathForItem(at: convertedPoint!) else { return nil }
         previewIndexPath = indexPath

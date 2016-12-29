@@ -16,11 +16,11 @@
 		AE3B54E01E1312B50022F068 /* PlayAgainButton@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B54DF1E1312B50022F068 /* PlayAgainButton@3x.png */; };
 		AE3B54E21E13140A0022F068 /* GameOverLogo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B54E11E13140A0022F068 /* GameOverLogo@3x.png */; };
 		AE3B54E51E1323AD0022F068 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54E41E1323AD0022F068 /* ViewController.swift */; };
-		AE3B54E91E1323BE0022F068 /* ResumeSectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54E61E1323BE0022F068 /* ResumeSectionTableViewCell.swift */; };
-		AE3B54EA1E1323BE0022F068 /* ResumeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54E71E1323BE0022F068 /* ResumeTableViewController.swift */; };
+		AE3B54E91E1323BE0022F068 /* ResumeSectionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54E61E1323BE0022F068 /* ResumeSectionCollectionViewCell.swift */; };
+		AE3B54EA1E1323BE0022F068 /* ResumeCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54E71E1323BE0022F068 /* ResumeCollectionViewController.swift */; };
 		AE3B54EB1E1323BE0022F068 /* ResumeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54E81E1323BE0022F068 /* ResumeViewController.swift */; };
-		AE3B54EE1E1323C60022F068 /* sectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54EC1E1323C60022F068 /* sectionTableViewController.swift */; };
-		AE3B54EF1E1323C60022F068 /* dataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54ED1E1323C60022F068 /* dataTableViewCell.swift */; };
+		AE3B54EE1E1323C60022F068 /* sectionCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54EC1E1323C60022F068 /* sectionCollectionViewController.swift */; };
+		AE3B54EF1E1323C60022F068 /* dataCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54ED1E1323C60022F068 /* dataCollectionViewCell.swift */; };
 		AE3B54F31E1323D00022F068 /* HidingNavigationBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54F01E1323D00022F068 /* HidingNavigationBarManager.swift */; };
 		AE3B54F41E1323D00022F068 /* HidingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54F11E1323D00022F068 /* HidingViewController.swift */; };
 		AE3B54F51E1323D00022F068 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B54F21E1323D00022F068 /* InitialViewController.swift */; };
@@ -89,6 +89,13 @@
 		AE3B55771E1330600022F068 /* NavigationControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B55761E1330600022F068 /* NavigationControllerExtension.swift */; };
 		AE3B55791E14449D0022F068 /* tutorialCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */; };
 		AE3B557B1E145D430022F068 /* disclosureAccessory@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B557A1E145D430022F068 /* disclosureAccessory@3x.png */; };
+		AE3B557E1E14858E0022F068 /* BallTrail.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE3B557C1E14858E0022F068 /* BallTrail.sks */; };
+		AE3B557F1E14858E0022F068 /* Star.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B557D1E14858E0022F068 /* Star.png */; };
+		AE3B55821E14869C0022F068 /* Star@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55801E14869C0022F068 /* Star@2x.png */; };
+		AE3B55831E14869C0022F068 /* Star@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55811E14869C0022F068 /* Star@3x.png */; };
+		AE3B55861E149ECA0022F068 /* interestsBaseball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55841E149ECA0022F068 /* interestsBaseball.jpg */; };
+		AE3B55871E149ECA0022F068 /* interestsFootball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55851E149ECA0022F068 /* interestsFootball.jpg */; };
+		AE3B55891E149EF60022F068 /* education1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55881E149EF60022F068 /* education1.jpg */; };
 		AE6548AF1E085E7C008784E8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6548AE1E085E7C008784E8 /* AppDelegate.swift */; };
 		AE6548B31E085E7C008784E8 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE6548B21E085E7C008784E8 /* Actions.sks */; };
 		AE6548B51E085E7C008784E8 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6548B41E085E7C008784E8 /* GameScene.swift */; };
@@ -179,11 +186,11 @@
 		AE3B54DF1E1312B50022F068 /* PlayAgainButton@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PlayAgainButton@3x.png"; sourceTree = "<group>"; };
 		AE3B54E11E13140A0022F068 /* GameOverLogo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GameOverLogo@3x.png"; sourceTree = "<group>"; };
 		AE3B54E41E1323AD0022F068 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		AE3B54E61E1323BE0022F068 /* ResumeSectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResumeSectionTableViewCell.swift; sourceTree = "<group>"; };
-		AE3B54E71E1323BE0022F068 /* ResumeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResumeTableViewController.swift; sourceTree = "<group>"; };
+		AE3B54E61E1323BE0022F068 /* ResumeSectionCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResumeSectionCollectionViewCell.swift; sourceTree = "<group>"; };
+		AE3B54E71E1323BE0022F068 /* ResumeCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResumeCollectionViewController.swift; sourceTree = "<group>"; };
 		AE3B54E81E1323BE0022F068 /* ResumeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResumeViewController.swift; sourceTree = "<group>"; };
-		AE3B54EC1E1323C60022F068 /* sectionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = sectionTableViewController.swift; sourceTree = "<group>"; };
-		AE3B54ED1E1323C60022F068 /* dataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dataTableViewCell.swift; sourceTree = "<group>"; };
+		AE3B54EC1E1323C60022F068 /* sectionCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = sectionCollectionViewController.swift; sourceTree = "<group>"; };
+		AE3B54ED1E1323C60022F068 /* dataCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = dataCollectionViewCell.swift; sourceTree = "<group>"; };
 		AE3B54F01E1323D00022F068 /* HidingNavigationBarManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HidingNavigationBarManager.swift; sourceTree = "<group>"; };
 		AE3B54F11E1323D00022F068 /* HidingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HidingViewController.swift; sourceTree = "<group>"; };
 		AE3B54F21E1323D00022F068 /* InitialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
@@ -252,6 +259,13 @@
 		AE3B55761E1330600022F068 /* NavigationControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControllerExtension.swift; sourceTree = "<group>"; };
 		AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tutorialCollectionViewCell.swift; sourceTree = "<group>"; };
 		AE3B557A1E145D430022F068 /* disclosureAccessory@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "disclosureAccessory@3x.png"; sourceTree = "<group>"; };
+		AE3B557C1E14858E0022F068 /* BallTrail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BallTrail.sks; sourceTree = "<group>"; };
+		AE3B557D1E14858E0022F068 /* Star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Star.png; sourceTree = "<group>"; };
+		AE3B55801E14869C0022F068 /* Star@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star@2x.png"; sourceTree = "<group>"; };
+		AE3B55811E14869C0022F068 /* Star@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Star@3x.png"; sourceTree = "<group>"; };
+		AE3B55841E149ECA0022F068 /* interestsBaseball.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = interestsBaseball.jpg; sourceTree = "<group>"; };
+		AE3B55851E149ECA0022F068 /* interestsFootball.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = interestsFootball.jpg; sourceTree = "<group>"; };
+		AE3B55881E149EF60022F068 /* education1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = education1.jpg; sourceTree = "<group>"; };
 		AE6548AB1E085E7C008784E8 /* Nuke Destroyer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nuke Destroyer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE6548AE1E085E7C008784E8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE6548B21E085E7C008784E8 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -353,11 +367,11 @@
 				AE3B55241E1324180022F068 /* Sounds */,
 				AE3B55011E1323FB0022F068 /* TextFiles */,
 				AE3B54F61E1323EB0022F068 /* Icons and PDFs */,
-				AE3B54E61E1323BE0022F068 /* ResumeSectionTableViewCell.swift */,
-				AE3B54E71E1323BE0022F068 /* ResumeTableViewController.swift */,
+				AE3B54E61E1323BE0022F068 /* ResumeSectionCollectionViewCell.swift */,
+				AE3B54E71E1323BE0022F068 /* ResumeCollectionViewController.swift */,
 				AE3B54E81E1323BE0022F068 /* ResumeViewController.swift */,
-				AE3B54EC1E1323C60022F068 /* sectionTableViewController.swift */,
-				AE3B54ED1E1323C60022F068 /* dataTableViewCell.swift */,
+				AE3B54EC1E1323C60022F068 /* sectionCollectionViewController.swift */,
+				AE3B54ED1E1323C60022F068 /* dataCollectionViewCell.swift */,
 				AE3B552B1E13242F0022F068 /* detailViewController.swift */,
 				AE3B54E41E1323AD0022F068 /* ViewController.swift */,
 				AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */,
@@ -418,6 +432,8 @@
 		AE3B552D1E13245E0022F068 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				AE3B55841E149ECA0022F068 /* interestsBaseball.jpg */,
+				AE3B55851E149ECA0022F068 /* interestsFootball.jpg */,
 				AE3B552E1E1324AC0022F068 /* Awards.jpg */,
 				AE3B552F1E1324AC0022F068 /* awards0.jpg */,
 				AE3B553C1E1324C60022F068 /* Interests.jpg */,
@@ -440,6 +456,7 @@
 				AE3B55471E1324C60022F068 /* languagesSwift.jpg */,
 				AE3B55381E1324BC0022F068 /* Education.jpg */,
 				AE3B55391E1324BC0022F068 /* education0.jpg */,
+				AE3B55881E149EF60022F068 /* education1.jpg */,
 				AE3B55301E1324AC0022F068 /* awards1.jpg */,
 				AE3B55311E1324AC0022F068 /* awards2.jpg */,
 				AE3B55321E1324AC0022F068 /* awards3.jpg */,
@@ -518,6 +535,10 @@
 		AE6548E71E086394008784E8 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				AE3B557C1E14858E0022F068 /* BallTrail.sks */,
+				AE3B55801E14869C0022F068 /* Star@2x.png */,
+				AE3B55811E14869C0022F068 /* Star@3x.png */,
+				AE3B557D1E14858E0022F068 /* Star.png */,
 				AE3B54DF1E1312B50022F068 /* PlayAgainButton@3x.png */,
 				AE3B54E11E13140A0022F068 /* GameOverLogo@3x.png */,
 				AE3B54DD1E1300F80022F068 /* DeveloperButton@3x.png */,
@@ -692,7 +713,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE3B55181E1324090022F068 /* education0.txt in Resources */,
+				AE3B55871E149ECA0022F068 /* interestsFootball.jpg in Resources */,
 				AE3B54FC1E1323F80022F068 /* bell-7.png in Resources */,
+				AE3B55821E14869C0022F068 /* Star@2x.png in Resources */,
 				AE3B54DE1E1300F80022F068 /* DeveloperButton@3x.png in Resources */,
 				AE6549151E089742008784E8 /* turret_1_14.png in Resources */,
 				AE3B557B1E145D430022F068 /* disclosureAccessory@3x.png in Resources */,
@@ -730,6 +753,7 @@
 				AE6549171E089742008784E8 /* turret_1_16.png in Resources */,
 				AE3B55711E1324D70022F068 /* technicalexperience1.jpg in Resources */,
 				AE6549161E089742008784E8 /* turret_1_15.png in Resources */,
+				AE3B557E1E14858E0022F068 /* BallTrail.sks in Resources */,
 				AE6548BA1E085E7C008784E8 /* Main.storyboard in Resources */,
 				AE6549091E089742008784E8 /* turret_1_2.png in Resources */,
 				AE3B555E1E1324CE0022F068 /* personalinfo3.jpg in Resources */,
@@ -740,6 +764,7 @@
 				AE3B55721E1324D70022F068 /* technicalexperience2.jpg in Resources */,
 				AE3B551D1E1324090022F068 /* technicalexperience2.txt in Resources */,
 				AE6549351E08974D008784E8 /* turret_2_4.png in Resources */,
+				AE3B55861E149ECA0022F068 /* interestsBaseball.jpg in Resources */,
 				AE6549311E08974D008784E8 /* turret_2_0.png in Resources */,
 				AE9AF8021E0CE08D0026D3ED /* Assets.xcassets in Resources */,
 				AE3B55221E1324090022F068 /* TechnicalExperienceDates.txt in Resources */,
@@ -758,6 +783,7 @@
 				AE6549891E09E5C1008784E8 /* Logo@3x.png in Resources */,
 				AE3B55501E1324C60022F068 /* languagesMatlab.jpg in Resources */,
 				AE3B55231E1324090022F068 /* Education.txt in Resources */,
+				AE3B557F1E14858E0022F068 /* Star.png in Resources */,
 				AE3B551F1E1324090022F068 /* technicalexperience4.txt in Resources */,
 				AE6549411E08974D008784E8 /* turret_2_16.png in Resources */,
 				AE65490A1E089742008784E8 /* turret_1_3.png in Resources */,
@@ -799,6 +825,8 @@
 				AE3B556E1E1324D70022F068 /* publications2.jpg in Resources */,
 				AE6548BF1E085E7C008784E8 /* LaunchScreen.storyboard in Resources */,
 				AE6549111E089742008784E8 /* turret_1_10.png in Resources */,
+				AE3B55831E14869C0022F068 /* Star@3x.png in Resources */,
+				AE3B55891E149EF60022F068 /* education1.jpg in Resources */,
 				AE6549451E08974D008784E8 /* turret_2.png in Resources */,
 				AE3B55131E1324090022F068 /* Interests.txt in Resources */,
 				AE6549131E089742008784E8 /* turret_1_12.png in Resources */,
@@ -844,17 +872,17 @@
 				AE3B55771E1330600022F068 /* NavigationControllerExtension.swift in Sources */,
 				AE3B54F51E1323D00022F068 /* InitialViewController.swift in Sources */,
 				AE6548B51E085E7C008784E8 /* GameScene.swift in Sources */,
-				AE3B54EA1E1323BE0022F068 /* ResumeTableViewController.swift in Sources */,
-				AE3B54E91E1323BE0022F068 /* ResumeSectionTableViewCell.swift in Sources */,
+				AE3B54EA1E1323BE0022F068 /* ResumeCollectionViewController.swift in Sources */,
+				AE3B54E91E1323BE0022F068 /* ResumeSectionCollectionViewCell.swift in Sources */,
 				AE3B552C1E13242F0022F068 /* detailViewController.swift in Sources */,
-				AE3B54EE1E1323C60022F068 /* sectionTableViewController.swift in Sources */,
+				AE3B54EE1E1323C60022F068 /* sectionCollectionViewController.swift in Sources */,
 				AE6548B71E085E7C008784E8 /* GameViewController.swift in Sources */,
 				AE3B54EB1E1323BE0022F068 /* ResumeViewController.swift in Sources */,
 				AE3B54F31E1323D00022F068 /* HidingNavigationBarManager.swift in Sources */,
 				AE6548AF1E085E7C008784E8 /* AppDelegate.swift in Sources */,
 				AE3B55791E14449D0022F068 /* tutorialCollectionViewCell.swift in Sources */,
 				AE65498B1E09ED27008784E8 /* Helper.swift in Sources */,
-				AE3B54EF1E1323C60022F068 /* dataTableViewCell.swift in Sources */,
+				AE3B54EF1E1323C60022F068 /* dataCollectionViewCell.swift in Sources */,
 				AE3B54F41E1323D00022F068 /* HidingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

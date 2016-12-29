@@ -8,10 +8,11 @@
 
 import UIKit
 
-class ResumeSectionTableViewCell: UITableViewCell {
+class ResumeSectionCollectionViewCell: UICollectionViewCell {
     
     // PARAMETERS
     // ------------------------------------------------------------------------------------------
+    @IBOutlet weak var disclosure: UIImageView!
     @IBOutlet weak var sectionImage: UIImageView!
     @IBOutlet weak var sectionLabel: UILabel!
     
@@ -23,15 +24,6 @@ class ResumeSectionTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-
-    // ------------------------------------------------------------------------------------------
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
     // ------------------------------------------------------------------------------------------
 
 }
