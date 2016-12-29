@@ -19,7 +19,7 @@ enum SectionType: Int {
     case publications
 }
 
-class ResumeTableViewController: UITableViewController {
+class ResumeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 
     // PARAMETERS
     // ------------------------------------------------------------------------------------------
@@ -34,10 +34,18 @@ class ResumeTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // set the collection view layout
+        collectionView?.backgroundColor = UIColor.white
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 1
+        collectionView!.collectionViewLayout = layout
+        
         // load the labels for each cell in the table
         loadSections()
         
-        hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: tableView)
+        hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: collectionView!)
         
         if let tabBar = tabBarController?.tabBar {
             print("tab bar is added")
@@ -60,7 +68,7 @@ class ResumeTableViewController: UITableViewController {
         //navigationController?.hidesBarsOnSwipe = true
 
         if let indexPath = selectedIndexPath {
-            if let cell = tableView.cellForRow(at: indexPath) as? ResumeSectionTableViewCell {
+            if let cell = collectionView?.cellForItem(at: indexPath) as? ResumeSectionCollectionViewCell {
                 cell.sectionImage.alpha = 0.95
             } else {
                 print("When the view is appearing, the cell isn't the correct class")
@@ -81,14 +89,14 @@ class ResumeTableViewController: UITableViewController {
 
     // ------------------------------------------------------------------------------------------
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
         // tab height should be 49
         let tabHeight: CGFloat
         if let tb = tabBarController {
@@ -97,7 +105,7 @@ class ResumeTableViewController: UITableViewController {
             print("The tab controller is nil")
             tabHeight = 49
         }
-
+        
         // nav height shoudl be 44
         let navHeight: CGFloat
         if let nc = navigationController {
@@ -106,32 +114,8 @@ class ResumeTableViewController: UITableViewController {
             print("the nav controller is nil")
             navHeight = 44
         }
-        
-        return (tableView.frame.size.height - tabHeight - navHeight) / 3.0
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        // tab height should be 49
-        let tabHeight: CGFloat
-        if let tb = tabBarController {
-            tabHeight = tb.tabBar.frame.size.height
-        } else {
-            print("The tab controller is nil")
-            tabHeight = 49
-        }
-        
-        // nav height shoudl be 44
-        let navHeight: CGFloat
-        if let nc = navigationController {
-            navHeight = nc.navigationBar.frame.size.height
-        } else {
-            print("The nav controller is nil")
-            navHeight = 44
-        }
-        
-        return (tableView.frame.size.height - tabHeight - navHeight) / 3.0
+     
+        return CGSize(width: collectionView.frame.width * 0.5 - 1.5, height: (collectionView.frame.height - navHeight - tabHeight) * 0.5 - 1.0)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -149,8 +133,8 @@ class ResumeTableViewController: UITableViewController {
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ResumeSectionTableViewCell
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ResumeSectionCollectionViewCell
         
         let name: String = sections[indexPath.row].replacingOccurrences(of: " ", with: "").appending(".jpg")
         cell.sectionImage.image = UIImage(named: name)
@@ -159,6 +143,8 @@ class ResumeTableViewController: UITableViewController {
         cell.sectionLabel.text = sections[indexPath.row]
         cell.sectionLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: cell.frame.height / 6)
         cell.sectionLabel.textColor = UIColor.white
+        
+        cell.disclosure.image = UIImage(named: "disclosureAccessory")
         
         // it turns out that performance is suffering from filtering the image on the fly
         // instead we will do image filtering before
@@ -170,14 +156,14 @@ class ResumeTableViewController: UITableViewController {
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return sections.count
     }
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) as? ResumeSectionTableViewCell {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? ResumeSectionCollectionViewCell {
             
             // change the alpha value so the user sees they selected the cell
             cell.sectionImage.alpha = 0.5
@@ -234,7 +220,7 @@ class ResumeTableViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "segueToSection") {
-            if let vc = segue.destination as? sectionTableViewController {
+            if let vc = segue.destination as? sectionCollectionViewController {
                 if let indexPath = selectedIndexPath {
                     vc.dataType = sections[indexPath.row]
                 } else {

@@ -428,6 +428,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bomb.name = "bomb"
         addChild(bomb)
         bombs.append(bomb)
+        
+        // add a trail to the bomb
+        let trailNode = SKNode()
+        trailNode.zPosition = 1
+        addChild(trailNode)
+        let trail = SKEmitterNode(fileNamed: "BallTrail")!
+        trail.targetNode = trailNode
+        trail.position = CGPoint(x: 0, y: bomb.size.height * 0.5)
+        bomb.addChild(trail)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -563,6 +572,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             sprite.zPosition = 50
             addChild(sprite)
             sprite.run(sequence)
+            remainingBomb.removeAllChildren()
             remainingBomb.run(remove)
         }
         
@@ -610,6 +620,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let sequence = SKAction.sequence([bomb_explosion, remove])
         
         // run the actions
+        bomb.removeAllChildren()
         bomb.run(remove)
         sprite.run(sequence)
         bullet.run(remove)

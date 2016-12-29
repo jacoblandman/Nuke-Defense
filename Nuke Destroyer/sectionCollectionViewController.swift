@@ -8,7 +8,7 @@
 
 import UIKit
 
-class sectionTableViewController: UITableViewController {
+class sectionCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 
     // PARAMETERS
     // ------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ class sectionTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         
         if let indexPath = selectedIndexPath {
-            if let cell = tableView.cellForRow(at: indexPath) as? dataTableViewCell {
+            if let cell = collectionView?.cellForItem(at: indexPath) as? dataCollectionViewCell {
                cell.dataImage.alpha = 0.95
             }
         }
@@ -48,7 +48,15 @@ class sectionTableViewController: UITableViewController {
         // these data types have additional detailed views
         if (dataType == "Technical Experience" || dataType == "Education") { cellAccessory = .disclosureIndicator }
         
-        hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: tableView)
+        // set the collection view layout
+        collectionView?.backgroundColor = UIColor.white
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 1
+        collectionView!.collectionViewLayout = layout
+        
+        hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: collectionView!)
         hidingNavigationBarManager?.onForegroundAction = .show
         hidingNavigationBarManager?.expansionResistance = 125
         
@@ -63,14 +71,13 @@ class sectionTableViewController: UITableViewController {
     
     // ------------------------------------------------------------------------------------------
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // nav height should be 44
         let navHeight: CGFloat
         if let nc = navigationController {
@@ -80,34 +87,16 @@ class sectionTableViewController: UITableViewController {
             navHeight = 0.0
         }
         
-        var scale : CGFloat = 3.0
-        if data.count < 3 { scale = CGFloat(data.count) }
-        
-        return (tableView.frame.size.height - navHeight) / scale
+        var scale : CGFloat = 2.0
+        if data.count < 3 { scale = 1.0 }
+        return CGSize(width: collectionView.frame.width * 0.5 - 1.5, height: (collectionView.frame.height - navHeight) / scale - 1.0)
+
     }
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        // nav height should be 44
-        let navHeight: CGFloat
-        if let nc = navigationController {
-            navHeight = nc.navigationBar.frame.size.height
-        } else {
-            print("The navigation controller is nil")
-            navHeight = 0.0
-        }
-        
-        var scale : CGFloat = 3.0
-        if data.count < 3 { scale = CGFloat(data.count) }
-        
-        return (tableView.frame.size.height  - navHeight) / scale
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SectionCell", for: indexPath) as! dataTableViewCell
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! dataCollectionViewCell
         
         let type = dataType.lowercased()
         let name: String = type.replacingOccurrences(of: " ", with: "").appending(imageNames[indexPath.row].appending(".jpg"))
@@ -122,7 +111,7 @@ class sectionTableViewController: UITableViewController {
         cell.dataLabel.textColor = UIColor.white
         
         // change the accessory type if there is another view with more detail (i.e. education and experience)
-        cell.accessoryType = cellAccessory
+        cell.disclosure.image = UIImage(named: "disclosureAccessory")
         if cellAccessory != .none { cell.isUserInteractionEnabled = true }
         
         // let the user interact with the email cell to email me
@@ -137,7 +126,7 @@ class sectionTableViewController: UITableViewController {
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return data.count
     }
     
@@ -174,8 +163,8 @@ class sectionTableViewController: UITableViewController {
     
     // ------------------------------------------------------------------------------------------
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) as? dataTableViewCell {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? dataCollectionViewCell {
             
             // change the alpha value so the user sees they selected the cell
             cell.dataImage.alpha = 0.5
@@ -278,7 +267,7 @@ class sectionTableViewController: UITableViewController {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
             if let indexPath = self.selectedIndexPath {
-                if let cell = self.tableView.cellForRow(at: indexPath) as? dataTableViewCell {
+                if let cell = self.collectionView?.cellForItem(at: indexPath) as? dataCollectionViewCell {
                     cell.dataImage.alpha = 0.95
                 }
             }
@@ -303,7 +292,7 @@ class sectionTableViewController: UITableViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
             if let indexPath = self.selectedIndexPath {
-                if let cell = self.tableView.cellForRow(at: indexPath) as? dataTableViewCell {
+                if let cell = self.collectionView?.cellForItem(at: indexPath) as? dataCollectionViewCell {
                     cell.dataImage.alpha = 0.95
                 }
             }
