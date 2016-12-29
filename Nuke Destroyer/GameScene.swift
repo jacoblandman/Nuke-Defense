@@ -61,6 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var turret2Background: SKSpriteNode!
     
     var bombs = [SKSpriteNode]()
+    var trails = [SKNode]()
     
     var floor: SKSpriteNode!
     
@@ -429,10 +430,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(bomb)
         bombs.append(bomb)
         
-        // add a trail to the bomb
+        // add a trail to the bomb, which is the target node
         let trailNode = SKNode()
         trailNode.zPosition = 1
+        trailNode.name = "trail"
         addChild(trailNode)
+        trails.append(trailNode)
+        
+        // add the emitter
         let trail = SKEmitterNode(fileNamed: "BallTrail")!
         trail.targetNode = trailNode
         trail.position = CGPoint(x: 0, y: bomb.size.height * 0.5)
@@ -538,12 +543,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         leftTouch = nil
         rightTouch = nil
-
-        animateBigExplosion(from: bomb)
+        
         // make the bomb that hit the ground have a big explosion
+        var trail: SKNode?
         if let bomb_index = bombs.index(of: bomb as! SKSpriteNode) {
             bombs.remove(at: bomb_index)
+            trail = trails[bomb_index]
+            trails.remove(at: bomb_index)
         }
+        animateBigExplosion(from: bomb, trail: trail)
+        
         
         // remove the rest of the bombs
         let spriteSheet = SKTexture(imageNamed: "Four")
@@ -552,7 +561,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // create all the sprite textures from the sprite sheet
         // there should be 16
-        for y in (3...3) {
+        for y in (2...3).reversed() {
             for x in (0...3) {
                 let rect = CGRect(x: CGFloat(x)/numFrames, y: CGFloat(y)/numFrames, width: 1/numFrames, height: 1/numFrames)
                 frames.append(SKTexture(rect: rect, in: spriteSheet))
@@ -564,6 +573,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.03)
         let sequence = SKAction.sequence([bomb_explosion, remove])
         
+        // remove the trail target node before removeing the trail emitter node
+        for trail in trails {
+            trail.removeFromParent()
+        }
+        
+        // remove the bombs and its emitter nodes and add the explosion sprite
         for remainingBomb in bombs {
             // add the explosion sprite
             let sprite = SKSpriteNode(texture: frames[0])
@@ -576,6 +591,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             remainingBomb.run(remove)
         }
         
+        trails.removeAll()
         bombs.removeAll()
         
         showGameOverLogos()
@@ -588,8 +604,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         guard bomb.name == "bomb" else { return }
         score += 1
         
+        // remove the trail and bomb from the array
         if let bomb_index = bombs.index(of: bomb as! SKSpriteNode) {
             bombs.remove(at: bomb_index)
+            let trail = trails[bomb_index]
+            trail.removeFromParent()
+            trails.remove(at: bomb_index)
         }
         
         // create the sequence of actions to take place
@@ -630,7 +650,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // ------------------------------------------------------------------------------------------
     
-    func animateBigExplosion(from bomb: SKNode) {
+    func animateBigExplosion(from bomb: SKNode, trail: SKNode?) {
         // create the sequence of actions to take place
         let remove = SKAction.removeFromParent()
         
@@ -661,6 +681,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.05)
         let sequence = SKAction.sequence([bomb_explosion, remove])
         
+        trail!.removeFromParent()
+        bomb.removeAllChildren()
         bomb.run(remove)
         sprite.run(sequence)
     }
@@ -708,7 +730,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.createEndGameLogos()
             }
             
-            
+            for node in self.children {
+                print(node)
+            }
             
         } else if (name == "developerButton") {
             // change the view to the developer info stuff
