@@ -250,5 +250,20 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
         linkedinButton.removeFromSuperview()
     }
     
+    // ------------------------------------------------------------------------------------------
+    // this function sets values for the section table view
+    // the dataType gets set, which informs the next view what text file to look at when loading the data
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "segueToTab") {
+            if let tabBar = segue.destination as? UITabBarController {
+                if let navc = tabBar.viewControllers?[0] as? UINavigationController {
+                    if let vc = navc.topViewController as? ResumeCollectionViewController {
+                        vc.originalNavController = navigationController
+                    }
+                }
+            }
+        }
+    }
     
 }

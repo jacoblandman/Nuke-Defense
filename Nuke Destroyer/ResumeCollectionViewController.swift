@@ -25,7 +25,9 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     // ------------------------------------------------------------------------------------------
     var sections = [String]()
     var selectedIndexPath: IndexPath?
+    var selectedSection: String?
     var hidingNavigationBarManager: HidingNavigationBarManager?
+    var originalNavController: UINavigationController?
     
     
     // METHODS
@@ -33,18 +35,19 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // set the collection view layout
+        navigationController?.isNavigationBarHidden = false
         collectionView?.backgroundColor = UIColor.white
+                
+        // set the collection view layout
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
-        layout.minimumInteritemSpacing = 1
-        layout.minimumLineSpacing = 1
+        layout.scrollDirection = .horizontal
+        setItemSize(for: layout)
         collectionView!.collectionViewLayout = layout
         
         // load the labels for each cell in the table
         loadSections()
         
+        // do the hiding navigation bar stuff, which hides the nav bar and tab bar when scolling vertically
         hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: collectionView!)
         
         if let tabBar = tabBarController?.tabBar {
@@ -65,16 +68,7 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
         super.viewWillAppear(animated)
         
         navigationController?.isNavigationBarHidden = false
-        //navigationController?.hidesBarsOnSwipe = true
-
-        if let indexPath = selectedIndexPath {
-            if let cell = collectionView?.cellForItem(at: indexPath) as? ResumeSectionCollectionViewCell {
-                cell.sectionImage.alpha = 0.95
-            } else {
-                print("When the view is appearing, the cell isn't the correct class")
-            }
-        }
-        
+        originalNavController?.isNavigationBarHidden = false
         navigationController?.hidesBarsOnSwipe = false
         
         hidingNavigationBarManager?.viewWillAppear(animated)
@@ -95,8 +89,7 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     
     // ------------------------------------------------------------------------------------------
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
+    func setItemSize(for layout: UICollectionViewFlowLayout) {
         // tab height should be 49
         let tabHeight: CGFloat
         if let tb = tabBarController {
@@ -114,8 +107,17 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
             print("the nav controller is nil")
             navHeight = 44
         }
-     
-        return CGSize(width: collectionView.frame.width * 0.5 - 1.5, height: (collectionView.frame.height - navHeight - tabHeight) * 0.5 - 1.0)
+        
+        let viewWidth = view.frame.width
+        let viewHeight = view.frame.height
+        
+        layout.minimumInteritemSpacing = 0.03 * viewWidth
+        layout.minimumLineSpacing = 0.03 * viewWidth
+        layout.sectionInset = UIEdgeInsets(top: 0.03 * viewHeight, left: 0.03 * viewWidth, bottom: 0.03 * viewHeight, right: 0.03 * viewWidth)
+        
+        layout.itemSize = CGSize(width: viewWidth - layout.sectionInset.left - layout.sectionInset.right,
+                                 height: viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight)
+        
     }
     
     // ------------------------------------------------------------------------------------------
@@ -146,11 +148,6 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
         
         cell.disclosure.image = UIImage(named: "disclosureAccessory")
         
-        // it turns out that performance is suffering from filtering the image on the fly
-        // instead we will do image filtering before
-        // this isn't surprising since we have to create additional CIImage and CGImages
-        //filterCellImage(cell: cell)
-        
         return cell
     }
     
@@ -163,23 +160,15 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     // ------------------------------------------------------------------------------------------
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? ResumeSectionCollectionViewCell {
-            
-            // change the alpha value so the user sees they selected the cell
-            cell.sectionImage.alpha = 0.5
-            selectedIndexPath = indexPath
-            
-            // load the section view table
-            if let sectionType = SectionType(rawValue: indexPath.row) {
-                segueToNextView(sectionType: sectionType)
-            } else {
-                print("The section Type is wrong when selecting a row")
-            }
+        
+        selectedSection = sections[indexPath.item]
+        
+        // load the section view table
+        if let sectionType = SectionType(rawValue: indexPath.row) {
+            segueToNextView(sectionType: sectionType)
         } else {
-            print("The cell is not the correct type when selecting")
+            print("The section Type is wrong when selecting a row")
         }
-        
-        
     }
     
     // ------------------------------------------------------------------------------------------
@@ -221,10 +210,11 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "segueToSection") {
             if let vc = segue.destination as? sectionCollectionViewController {
-                if let indexPath = selectedIndexPath {
-                    vc.dataType = sections[indexPath.row]
+                vc.originalNavController = originalNavController
+                if let section = selectedSection {
+                    vc.dataType = section
                 } else {
-                    print("When preparing to segue, the index path isn't set")
+                    print("When preparing to segue, the section isn't set")
                 }
             } else {
                 print("When preparing to segue, the destination isn't correct")
@@ -257,4 +247,20 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     }
     
     // ------------------------------------------------------------------------------------------
+    
+    override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as? ResumeSectionCollectionViewCell
+        UIView.animate(withDuration: 0.1) { [] in
+            cell?.sectionImage.alpha = 0.5
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as? ResumeSectionCollectionViewCell
+        UIView.animate(withDuration: 0.1) { [] in
+            cell?.sectionImage.alpha = 0.95
+        }
+    }
 }

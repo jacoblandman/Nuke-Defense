@@ -96,6 +96,8 @@
 		AE3B55861E149ECA0022F068 /* interestsBaseball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55841E149ECA0022F068 /* interestsBaseball.jpg */; };
 		AE3B55871E149ECA0022F068 /* interestsFootball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55851E149ECA0022F068 /* interestsFootball.jpg */; };
 		AE3B55891E149EF60022F068 /* education1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55881E149EF60022F068 /* education1.jpg */; };
+		AE3B558B1E15AEDA0022F068 /* detailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B558A1E15AEDA0022F068 /* detailCollectionViewCell.swift */; };
+		AE3B558D1E15B9430022F068 /* pauseButton@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B558C1E15B9430022F068 /* pauseButton@3x.png */; };
 		AE6548AF1E085E7C008784E8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6548AE1E085E7C008784E8 /* AppDelegate.swift */; };
 		AE6548B31E085E7C008784E8 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE6548B21E085E7C008784E8 /* Actions.sks */; };
 		AE6548B51E085E7C008784E8 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6548B41E085E7C008784E8 /* GameScene.swift */; };
@@ -266,6 +268,8 @@
 		AE3B55841E149ECA0022F068 /* interestsBaseball.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = interestsBaseball.jpg; sourceTree = "<group>"; };
 		AE3B55851E149ECA0022F068 /* interestsFootball.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = interestsFootball.jpg; sourceTree = "<group>"; };
 		AE3B55881E149EF60022F068 /* education1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = education1.jpg; sourceTree = "<group>"; };
+		AE3B558A1E15AEDA0022F068 /* detailCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = detailCollectionViewCell.swift; sourceTree = "<group>"; };
+		AE3B558C1E15B9430022F068 /* pauseButton@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pauseButton@3x.png"; sourceTree = "<group>"; };
 		AE6548AB1E085E7C008784E8 /* Nuke Destroyer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nuke Destroyer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE6548AE1E085E7C008784E8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE6548B21E085E7C008784E8 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -373,6 +377,7 @@
 				AE3B54EC1E1323C60022F068 /* sectionCollectionViewController.swift */,
 				AE3B54ED1E1323C60022F068 /* dataCollectionViewCell.swift */,
 				AE3B552B1E13242F0022F068 /* detailViewController.swift */,
+				AE3B558A1E15AEDA0022F068 /* detailCollectionViewCell.swift */,
 				AE3B54E41E1323AD0022F068 /* ViewController.swift */,
 				AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */,
 				AE3B54F01E1323D00022F068 /* HidingNavigationBarManager.swift */,
@@ -535,6 +540,7 @@
 		AE6548E71E086394008784E8 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				AE3B558C1E15B9430022F068 /* pauseButton@3x.png */,
 				AE3B557C1E14858E0022F068 /* BallTrail.sks */,
 				AE3B55801E14869C0022F068 /* Star@2x.png */,
 				AE3B55811E14869C0022F068 /* Star@3x.png */,
@@ -780,6 +786,7 @@
 				AE6549341E08974D008784E8 /* turret_2_3.png in Resources */,
 				AE3B55331E1324AC0022F068 /* Awards.jpg in Resources */,
 				AE3B551A1E1324090022F068 /* TechnicalExperience.txt in Resources */,
+				AE3B558D1E15B9430022F068 /* pauseButton@3x.png in Resources */,
 				AE6549891E09E5C1008784E8 /* Logo@3x.png in Resources */,
 				AE3B55501E1324C60022F068 /* languagesMatlab.jpg in Resources */,
 				AE3B55231E1324090022F068 /* Education.txt in Resources */,
@@ -883,6 +890,7 @@
 				AE3B55791E14449D0022F068 /* tutorialCollectionViewCell.swift in Sources */,
 				AE65498B1E09ED27008784E8 /* Helper.swift in Sources */,
 				AE3B54EF1E1323C60022F068 /* dataCollectionViewCell.swift in Sources */,
+				AE3B558B1E15AEDA0022F068 /* detailCollectionViewCell.swift in Sources */,
 				AE3B54F41E1323D00022F068 /* HidingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

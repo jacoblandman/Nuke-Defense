@@ -12,10 +12,18 @@ import GameplayKit
 
 class GameViewController: UIViewController {
 
+    // PARAMETERS
+    // ------------------------------------------------------------------------------------------
     var currentGame: GameScene!
+    
+    // METHODS
+    // ------------------------------------------------------------------------------------------
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: Notification.Name.UIApplicationWillResignActive, object: nil)
         
         if let view = self.view as! SKView? {
             
@@ -38,26 +46,38 @@ class GameViewController: UIViewController {
         }
     }
 
+    // ------------------------------------------------------------------------------------------
+    
     override var shouldAutorotate: Bool {
         return true
     }
 
+    // ------------------------------------------------------------------------------------------
+    
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .landscape
     }
 
+    // ------------------------------------------------------------------------------------------
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
 
+    // ------------------------------------------------------------------------------------------
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
+    // ------------------------------------------------------------------------------------------
+    
     func developerButtonTapped() {
         performSegue(withIdentifier: "segueToJTL", sender: self)
     }
+    
+    // ------------------------------------------------------------------------------------------
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -65,19 +85,35 @@ class GameViewController: UIViewController {
         navigationController?.hidesBarsOnSwipe = false
     }
     
+    // ------------------------------------------------------------------------------------------
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        currentGame.isPaused = false
+
         currentGame.leftTouch = nil
         currentGame.rightTouch = nil
         currentGame.playButtonTouch = nil
         currentGame.developerButtonTouch = nil
     }
     
+    // ------------------------------------------------------------------------------------------
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        currentGame.isPaused = true
     }
     
+    // ------------------------------------------------------------------------------------------
+    
+    func appMovedToBackground() {
+        print("App moved to background!")
+        
+        if currentGame.gameState == .playing {
+            currentGame.pauseGame()
+        }
+        
+        
+    }
+    
+    // ------------------------------------------------------------------------------------------
 }
 

@@ -18,6 +18,7 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     var cellAccessory: UITableViewCellAccessoryType = .none
     var selectedIndexPath: IndexPath?
     var hidingNavigationBarManager: HidingNavigationBarManager?
+    var originalNavController: UINavigationController?
     
     
     // METHODS
@@ -27,12 +28,7 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if let indexPath = selectedIndexPath {
-            if let cell = collectionView?.cellForItem(at: indexPath) as? dataCollectionViewCell {
-               cell.dataImage.alpha = 0.95
-            }
-        }
+        originalNavController?.isNavigationBarHidden = true
         
         hidingNavigationBarManager?.viewWillAppear(animated)
     }
@@ -41,19 +37,19 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         loadData()
         setImageNames()
-        
         title = dataType
+        
         // these data types have additional detailed views
         if (dataType == "Technical Experience" || dataType == "Education") { cellAccessory = .disclosureIndicator }
         
         // set the collection view layout
         collectionView?.backgroundColor = UIColor.white
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
-        layout.minimumInteritemSpacing = 1
-        layout.minimumLineSpacing = 1
+        layout.scrollDirection = .horizontal
+        setItemSize(for: layout)
         collectionView!.collectionViewLayout = layout
         
         hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: collectionView!)
@@ -77,20 +73,35 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     
     // ------------------------------------------------------------------------------------------
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // nav height should be 44
+    func setItemSize(for layout: UICollectionViewFlowLayout) {
+        // tab height should be 49
+        let tabHeight: CGFloat
+        if let tb = tabBarController {
+            tabHeight = tb.tabBar.frame.size.height
+        } else {
+            print("The tab controller is nil")
+            tabHeight = 49
+        }
+        
+        // nav height shoudl be 44
         let navHeight: CGFloat
         if let nc = navigationController {
             navHeight = nc.navigationBar.frame.size.height
         } else {
-            print("The navigation controller is nil")
-            navHeight = 0.0
+            print("the nav controller is nil")
+            navHeight = 44
         }
         
-        var scale : CGFloat = 2.0
-        if data.count < 3 { scale = 1.0 }
-        return CGSize(width: collectionView.frame.width * 0.5 - 1.5, height: (collectionView.frame.height - navHeight) / scale - 1.0)
-
+        let viewWidth = view.frame.width
+        let viewHeight = view.frame.height
+        
+        layout.minimumInteritemSpacing = 0.03 * viewWidth
+        layout.minimumLineSpacing = 0.03 * viewWidth
+        layout.sectionInset = UIEdgeInsets(top: 0.03 * viewHeight, left: 0.03 * viewWidth, bottom: 0.03 * viewHeight, right: 0.03 * viewWidth)
+        
+        layout.itemSize = CGSize(width: viewWidth - layout.sectionInset.left - layout.sectionInset.right,
+                                 height: viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight)
+        
     }
     
     // ------------------------------------------------------------------------------------------
@@ -111,8 +122,10 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
         cell.dataLabel.textColor = UIColor.white
         
         // change the accessory type if there is another view with more detail (i.e. education and experience)
-        cell.disclosure.image = UIImage(named: "disclosureAccessory")
-        if cellAccessory != .none { cell.isUserInteractionEnabled = true }
+        if cellAccessory != .none {
+            cell.disclosure.image = UIImage(named: "disclosureAccessory")
+            if cellAccessory != .none { cell.isUserInteractionEnabled = true }
+        }
         
         // let the user interact with the email cell to email me
         if (cell.dataLabel.text == "jlandman@tamu.edu") { cell.isUserInteractionEnabled = true }
@@ -166,8 +179,6 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? dataCollectionViewCell {
             
-            // change the alpha value so the user sees they selected the cell
-            cell.dataImage.alpha = 0.5
             selectedIndexPath = indexPath
             
             // if the email cell was selected, open the mail app
@@ -264,15 +275,6 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
         })
         
         present(ac, animated: true)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-            if let indexPath = self.selectedIndexPath {
-                if let cell = self.collectionView?.cellForItem(at: indexPath) as? dataCollectionViewCell {
-                    cell.dataImage.alpha = 0.95
-                }
-            }
-        })
-        
     }
     
     // ------------------------------------------------------------------------------------------
@@ -289,14 +291,6 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
         })
         
         present(ac, animated: true)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-            if let indexPath = self.selectedIndexPath {
-                if let cell = self.collectionView?.cellForItem(at: indexPath) as? dataCollectionViewCell {
-                    cell.dataImage.alpha = 0.95
-                }
-            }
-        })
     }
     
     // ------------------------------------------------------------------------------------------
@@ -324,5 +318,21 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     }
     
     // ------------------------------------------------------------------------------------------
+    
+    override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as? dataCollectionViewCell
+        UIView.animate(withDuration: 0.1) { [] in
+            cell?.dataImage.alpha = 0.5
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as? dataCollectionViewCell
+        UIView.animate(withDuration: 0.1) { [] in
+            cell?.dataImage.alpha = 0.95
+        }
+    }
     
 }

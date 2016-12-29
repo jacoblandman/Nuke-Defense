@@ -21,7 +21,7 @@ extension UINavigationController {
         }
     }
     
-    override open var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
+    override open var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
         get {
             if let visibleVC = visibleViewController {
                 return visibleVC.preferredInterfaceOrientationForPresentation
@@ -30,12 +30,21 @@ extension UINavigationController {
         }
     }
     
-    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask{
+    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         get {
             if let visibleVC = visibleViewController {
                 return visibleVC.supportedInterfaceOrientations
             }
             return super.supportedInterfaceOrientations
         }
+    }
+}
+
+extension UIAlertController {
+    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.landscape
+    }
+    override open var shouldAutorotate: Bool {
+        return false
     }
 }

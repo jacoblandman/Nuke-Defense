@@ -13,6 +13,7 @@ enum GameState {
     case showingLogo
     case playing
     case gameOver
+    case paused
 }
 
 enum CollisionTypes: UInt32 {
@@ -38,6 +39,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var logo: SKSpriteNode!
     var playButton: SKSpriteNode!
     var developerButton: SKSpriteNode!
+    var pauseButton: SKSpriteNode!
     var gameScore: SKLabelNode!
     var background: SKSpriteNode!
     var score: Int = 0 {
@@ -69,6 +71,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var releaseTime = 2.0
     let floorReleaseTime: Double = 0.35
     var bulletNumber = RandomInt(min: 0, max: 2)
+    var needsReset: Bool = true
     
     var leftTouch: UITouch?
     var rightTouch: UITouch?
@@ -83,7 +86,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // set the gravity and speed for the game
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -1.0)
-        physicsWorld.speed = 0.55
+        physicsWorld.speed = 0.6
         physicsWorld.contactDelegate = self
         
         // load the background, logos, scores, turrets, and start releasing bombs
@@ -102,7 +105,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // check the game state
         switch gameState {
             // if a touch happened while the logo is shoing then start the game
-            case .showingLogo, .gameOver:
+            case .showingLogo, .gameOver, .paused:
                 guard let touch = touches.first else { return }
                 if playButton.contains(touch.location(in: self)) {
                     if playButtonTouch == nil {
@@ -119,11 +122,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // if a touch happened while playing, set the left or right touch for controlling the turrets
             case .playing:
                 guard let touch = touches.first else { return }
+                
+                if pauseButton.contains(touch.location(in: self)) {
+                    pauseGame()
+                    //self.isPaused = true
+                    return
+                }
+                
                 if touch.location(in: self).x < frame.size.width / 2 {
                     if leftTouch == nil { leftTouch = touch }
                 } else {
                     if rightTouch == nil { rightTouch = touch }
                 }
+            
         }
     }
     
@@ -131,7 +142,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         switch gameState {
-            case .showingLogo, .gameOver:
+            case .showingLogo, .gameOver, .paused:
                 for touch in touches {
                     if (touch == playButtonTouch) {
                         playButtonTouch = nil
@@ -174,7 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // check the game state
         switch gameState {
         // if a touch happened while the logo is shoing then start the game
-            case .showingLogo, .gameOver:
+            case .showingLogo, .gameOver, .paused:
                 for touch in touches {
                     if (touch == playButtonTouch) {
                         playButtonTouch = nil
@@ -244,6 +255,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameScore.horizontalAlignmentMode = .left
         gameScore.position = convert(CGPoint(x: 10, y: height - (10 + scoreFontSize)), to: gameScore)
         gameScore.fontSize = scoreFontSize
+        gameScore.name = "gameScore"
         addChild(gameScore)
         
         // place the high score label
@@ -254,7 +266,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel.horizontalAlignmentMode = .right
         highScoreLabel.position = convert(CGPoint(x: width - 10, y: height - (10 + scoreFontSize)), to: highScoreLabel)
         highScoreLabel.fontSize = scoreFontSize
+        highScoreLabel.name = "highScore"
         addChild(highScoreLabel)
+        
+        // we'll add the pause button here too
+        pauseButton = SKSpriteNode(imageNamed: "pauseButton")
+        pauseButton.position = CGPoint(x: width - 10 - pauseButton.size.width, y: height - (10 + scoreFontSize + pauseButton.size.height))
+        pauseButton.zPosition = 50
+        pauseButton.alpha = 0.0
+        pauseButton.name = "pauseButton"
+        addChild(pauseButton)
+        
     }
     
     // ------------------------------------------------------------------------------------------
@@ -268,12 +290,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         turret1Background.zPosition = 9
         scale(turret1Background, using: scale)
         turret1Background.position = convert(CGPoint(x: turret1Background.size.width / 4.0, y: (turret1Background.size.height / 4.0)), to: turret1Background)
+        turret1Background.name = "turret"
         addChild(turret1Background)
         
         turret2Background = SKSpriteNode(texture: turretTexture)
         turret2Background.zPosition = 9
         scale(turret2Background, using: scale)
         turret2Background.position = convert(CGPoint(x: view!.frame.size.width - (turret2Background.size.width / 4.0), y: turret2Background.size.height / 4.0), to: turret2Background)
+        turret2Background.name = "turret"
         addChild(turret2Background)
         
         let gunTexture = SKTexture(imageNamed: imageName.appending("_0"))
@@ -282,12 +306,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         turret1.anchorPoint = CGPoint(x: 0.5, y: 0.4059)
         turret1.position = (CGPoint(x: turret1Background.position.x, y: turret1Background.position.y))
         turret1.zPosition = 10
+        turret1.name = "gun"
         
         turret2 = turret(texture: gunTexture)
         scale(turret2, using: scale)
         turret2.anchorPoint = CGPoint(x: 0.5, y: 0.4059)
         turret2.position = (CGPoint(x: turret2Background.position.x, y: turret2Background.position.y))
         turret2.zPosition = 10
+        turret2.name = "gun"
         
         addChild(turret1)
         addChild(turret2)
@@ -402,12 +428,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //playButton.anchorPoint = CGPoint(x: 0.0, y: 1.0)
         playButton.position = CGPoint(x: logo.position.x - playButton.size.width * 0.5 - spacing, y: logo.position.y - (spacing + playButton.size.height * 0.5))
         playButton.name = "playButton"
+        playButton.zPosition = 51
         addChild(playButton)
         
         developerButton = SKSpriteNode(imageNamed: "DeveloperButton")
         //developerButton.anchorPoint = CGPoint(x: 1.0, y: 1.0)
         developerButton.position = CGPoint(x: logo.position.x + developerButton.size.width * 0.5 + spacing, y: logo.position.y - (spacing + playButton.size.height * 0.5))
         developerButton.name = "developerButton"
+        developerButton.zPosition = 51
         addChild(developerButton)
         
     }
@@ -433,7 +461,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // add a trail to the bomb, which is the target node
         let trailNode = SKNode()
         trailNode.zPosition = 1
-        trailNode.name = "trail"
+        trailNode.name = "trailNode"
         addChild(trailNode)
         trails.append(trailNode)
         
@@ -441,6 +469,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let trail = SKEmitterNode(fileNamed: "BallTrail")!
         trail.targetNode = trailNode
         trail.position = CGPoint(x: 0, y: bomb.size.height * 0.5)
+        trail.name = "trail"
         bomb.addChild(trail)
     }
     
@@ -479,6 +508,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let blackRect = SKSpriteNode(color: UIColor.black, size: CGSize(width:width, height: height))
         blackRect.position = CGPoint(x: frame.midX, y: frame.midY)
         blackRect.zPosition = -2
+        blackRect.name = "background"
         addChild(blackRect)
         
         // load the background image
@@ -489,6 +519,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background.position = CGPoint(x: width / 2.0 , y: height / 2.0)
         background.zPosition = -1
         background.alpha = 0.5
+        background.name = "background"
         addChild(background)
 
     }
@@ -585,6 +616,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scale(sprite, using: scale)
             sprite.position = remainingBomb.position
             sprite.zPosition = 50
+            sprite.name = "explosion"
             addChild(sprite)
             sprite.run(sequence)
             remainingBomb.removeAllChildren()
@@ -595,6 +627,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bombs.removeAll()
         
         showGameOverLogos()
+        needsReset = true
     }
     
     // ------------------------------------------------------------------------------------------
@@ -633,6 +666,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scale(sprite, using: scale)
         sprite.position = bomb.position
         sprite.zPosition = 50
+        sprite.name = "explosion"
         addChild(sprite)
         
         // animate the explision and remove the node afterwards
@@ -675,6 +709,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         whiteSpace = whiteSpace * 2 * scale
         sprite.position = CGPoint(x: frame.midX, y: sprite.size.height / 2 - whiteSpace)
         sprite.zPosition = 50
+        sprite.name = "explosion"
         addChild(sprite)
 
         // animate the explision and remove the node afterwards
@@ -701,12 +736,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let name = button.name!
         if name == "playButton" {
             
-            reset()
             // create the actions to start the game
             // move the buttons down
             // move the logo up
             // remove the logo
             // fade the background alpha
+            
+            if (needsReset) {
+                reset()
+                needsReset = false
+            }
+            
             let moveDown = SKAction.moveTo(y: 0.0 - playButton.size.height, duration: 0.2)
             let moveUp = SKAction.moveTo(y: frame.size.height + logo.size.height, duration: 0.2)
             let remove = SKAction.removeFromParent()
@@ -717,22 +757,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             let fadeBackground = SKAction.run{ [unowned self] in
                 self.background.run(fadeAlpha)
+                self.pauseButton.run(fadeAlpha)
             }
             playButton.run(SKAction.sequence([moveDown, wait]))
             developerButton.run(SKAction.sequence([moveDown, wait, moveLogo, fadeBackground]))
             
-            // set the gameState to playing and release the bombs
-            gameState = .playing
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
-                self.releaseBombs()
+                    // set the gameState to playing and release the bombs
+                    if self.gameState == .paused { self.unpauseGame() }
                 
-                // create the playAgain button and the Game Over logo
-                self.createEndGameLogos()
-            }
-            
-            for node in self.children {
-                print(node)
-            }
+                    self.gameState = .playing
+                    self.releaseBombs()
+                }
             
         } else if (name == "developerButton") {
             // change the view to the developer info stuff
@@ -744,20 +780,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // ------------------------------------------------------------------------------------------
     
-    func createEndGameLogos() {
-        playButton.texture = SKTexture(imageNamed: "PlayAgainButton")
-        logo = SKSpriteNode(imageNamed: "GameOverLogo")
-        logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
-        logo.position = CGPoint(x: frame.midX, y: frame.size.height + logo.size.height)
-        logo.zPosition = 50
-        addChild(logo)
-        
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
     func showGameOverLogos() {
+        
+        pauseButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
+            self.playButton.texture = SKTexture(imageNamed: "PlayAgainButton")
+            self.logo = SKSpriteNode(imageNamed: "GameOverLogo")
+            self.logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+            self.logo.position = CGPoint(x: self.frame.midX, y: self.frame.size.height + self.logo.size.height)
+            self.logo.zPosition = 51
+            self.addChild(self.logo)
+            
             let logoPosition = self.frame.midY + self.frame.height / 6
             let spacing: CGFloat = 15
             let moveDown = SKAction.moveTo(y: logoPosition, duration: 0.2)
@@ -784,6 +818,67 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         releaseTime = 2.0
         bulletNumber = RandomInt(min: 0, max: 2)
     }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func presentPauseMenu() {
+        
+        playButton.texture = SKTexture(imageNamed: "PlayButton")
+        logo = SKSpriteNode(imageNamed: "Logo")
+        logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+        logo.position = CGPoint(x: frame.midX, y: frame.size.height + logo.size.height)
+        logo.zPosition = 50
+        addChild(logo)
+        
+        let logoPosition = self.frame.midY + self.frame.height / 6
+        let spacing: CGFloat = 15
+        let moveDown = SKAction.moveTo(y: logoPosition, duration: 0.2)
+        let moveUp = SKAction.moveTo(y: logoPosition - (spacing + self.playButton.size.height * 0.5), duration: 0.2)
+        let fadeAlpha = SKAction.fadeAlpha(to: 0.5, duration: 0.2)
+        let wait = SKAction.wait(forDuration: 0.2)
+        let moveLogo = SKAction.run { [unowned self] in
+            self.logo.run(moveDown)
+        }
+        let moveButtons = SKAction.run { [unowned self] in
+            self.developerButton.run(moveUp)
+            self.playButton.run(moveUp)
+        }
+        let fadePause = SKAction.run { [unowned self] in
+            self.pauseButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
+        }
+        
+        self.background.run(SKAction.sequence([fadeAlpha, fadePause, wait, moveLogo, wait, moveButtons]))
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func pauseGame() {
+        gameState = .paused
+        self.physicsWorld.speed = 0.0
+        leftTouch = nil
+        rightTouch = nil
+        
+        for node in self.children {
+            if (node.name == "bullet" || node.name == "bomb" || node.name == "trail" || node.name == "trailNode" || node.name == "explosion") {
+               node.isPaused = true
+            }
+        }
+        
+        presentPauseMenu()
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func unpauseGame() {
+        
+        self.physicsWorld.speed = 0.6
+        for node in self.children {
+            node.isPaused = false
+        }
+    }
+    
+    
+    // ------------------------------------------------------------------------------------------
     
     
 }
