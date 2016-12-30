@@ -20,6 +20,7 @@ enum CollisionTypes: UInt32 {
     case bullet = 1
     case bomb = 2
     case floor = 4
+    case bird = 8
 }
 
 enum BirdTypes: Int {
@@ -564,8 +565,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bird.position = CGPoint(x: xPos, y: yPos)
         bird.physicsBody = SKPhysicsBody(rectangleOf: bird.size)
         bird.physicsBody?.isDynamic = false
-        //bird.physicsBody!.categoryBitMask = CollisionTypes.bomb.rawValue
-        //bird.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue | CollisionTypes.floor.rawValue
+        bird.physicsBody!.categoryBitMask = CollisionTypes.bird.rawValue
+        bird.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue
         bird.zPosition = 50
         bird.name = "bird"
         addChild(bird)
@@ -576,7 +577,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             frames.append(SKTexture(imageNamed: (birdName?.appending(String(i)))! ))
         }
         
-        let fly = SKAction.animate(with: frames, timePerFrame: 0.2)
+        let fly = SKAction.animate(with: frames, timePerFrame: 0.1)
         let flyForever = SKAction.repeatForever(fly)
         let move = SKAction.moveBy(x: (1.0 - 2.0*randomInt) * (viewWidth + bird.size.width) , y: 0.0, duration: 5.0)
         let remove = SKAction.removeFromParent()
