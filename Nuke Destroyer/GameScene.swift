@@ -91,7 +91,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var scale: CGFloat!
     var releaseTime = 2.0
-    let floorReleaseTime: Double = 0.35
+    let floorReleaseTime: Double = 0.5
     var bulletNumber = RandomInt(min: 0, max: 2)
     var needsReset: Bool = true
     
@@ -252,13 +252,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         if let touch = leftTouch {
-            move(turret1, toward: touch.location(in: self))
-            shootBullet(from: turret1, towards: touch.location(in: self))
+            
+            let moveAction = SKAction.run { [unowned self] in
+               self.move(self.turret1, toward: touch.location(in: self))
+            }
+            let shootAction = SKAction.run { [unowned self] in
+                self.shootBullet(from: self.turret1, towards: touch.location(in: self))
+            }
+            let wait = SKAction.wait(forDuration: 0.1)
+            run(SKAction.sequence([moveAction, wait, shootAction]))
         }
         
         if let touch = rightTouch {
-            move(turret2, toward: touch.location(in: self))
-            shootBullet(from: turret2, towards: touch.location(in: self))
+            let moveAction = SKAction.run { [unowned self] in
+                self.move(self.turret2, toward: touch.location(in: self))
+            }
+            let shootAction = SKAction.run { [unowned self] in
+                self.shootBullet(from: self.turret2, towards: touch.location(in: self))
+            }
+            let wait = SKAction.wait(forDuration: 0.1)
+            run(SKAction.sequence([moveAction, wait, shootAction]))
         }
         
     }
@@ -305,7 +318,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func createTurrets() {
         scale = 0.75
-        let turretNumber = arc4random_uniform(2)+1
+        let turretNumber = RandomInt(min: 1, max: 1)
         let imageName = "turret_".appending(String(turretNumber))
         let turretTexture = SKTexture(imageNamed: imageName)
         turret1Background = SKSpriteNode(texture: turretTexture)
@@ -322,15 +335,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         turret2Background.name = "turret"
         addChild(turret2Background)
         
-        let gunTexture = SKTexture(imageNamed: imageName.appending("_0"))
-        turret1 = turret(texture: gunTexture)
+        // load all the texture frames frames from the sheet
+        let spriteSheet = SKTexture(imageNamed: imageName.appending("_sheet"))
+        var frames = [SKTexture]()
+        let numFrames: CGFloat = 20.0
+        
+        for i in (0...19).reversed() {
+            let rect = CGRect(x: CGFloat(i) / numFrames, y: 0, width: 1/numFrames, height: 1)
+            frames.append(SKTexture(rect: rect, in: spriteSheet))
+            
+        }
+        
+        //let gunTexture = SKTexture(imageNamed: imageName.appending("_0"))
+        turret1 = turret(texture: frames[0])
         scale(turret1, using: scale)
         turret1.anchorPoint = CGPoint(x: 0.5, y: 0.4059)
         turret1.position = (CGPoint(x: turret1Background.position.x, y: turret1Background.position.y))
         turret1.zPosition = 10
         turret1.name = "gun"
         
-        turret2 = turret(texture: gunTexture)
+        turret2 = turret(texture: frames[0])
         scale(turret2, using: scale)
         turret2.anchorPoint = CGPoint(x: 0.5, y: 0.4059)
         turret2.position = (CGPoint(x: turret2Background.position.x, y: turret2Background.position.y))
@@ -339,14 +363,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         addChild(turret1)
         addChild(turret2)
-        
-        var frames = [gunTexture]
-        
-        for i in 1...19 {
-            let newTexture = SKTexture(imageNamed: imageName.appending("_\(i)"))
-            //let rotate = SKAction.rotate(byAngle: CGFloat.pi, duration: 0.0)
-            frames.append(newTexture)
-        }
         
         let turret1_animation = SKAction.animate(with: frames, timePerFrame: 0.1)
         let turret1_rotation = SKAction.rotate(byAngle: -1.0 * CGFloat.pi / 6, duration: 0.1)
@@ -433,7 +449,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let angle = atan2(v2.dy, v2.dx) - atan2(v1.dy, v1.dx)
         
-        let rotate = SKAction.rotate(toAngle: angle, duration: 0.1)
+        let rotate = SKAction.rotate(toAngle: angle, duration: 0.04)
         turret.run(rotate)
     }
 
@@ -466,33 +482,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func createBomb() {
         
-        let bomb = SKSpriteNode(imageNamed: "Bomb")
-        scale(bomb, using: scale)
-        let xPos = RandomCGFloat(min: Float(2.0 * bomb.size.width), max: Float(frame.size.width - 2.0 * bomb.size.width))
-        bomb.position = CGPoint(x: xPos, y: frame.size.height + bomb.size.height * 0.5)
-        bomb.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        bomb.physicsBody = SKPhysicsBody(rectangleOf: bomb.size)
-        bomb.physicsBody?.isDynamic = true
-        bomb.physicsBody!.categoryBitMask = CollisionTypes.bomb.rawValue
-        bomb.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue | CollisionTypes.floor.rawValue
-        bomb.zPosition = 50
-        bomb.name = "bomb"
-        addChild(bomb)
-        bombs.append(bomb)
+        if gameState == .playing {
+            let bomb = SKSpriteNode(imageNamed: "Bomb")
+            scale(bomb, using: scale)
+            let xPos = RandomCGFloat(min: Float(2.0 * bomb.size.width), max: Float(frame.size.width - 2.0 * bomb.size.width))
+            bomb.position = CGPoint(x: xPos, y: frame.size.height + bomb.size.height * 0.5)
+            bomb.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+            bomb.physicsBody = SKPhysicsBody(rectangleOf: bomb.size)
+            bomb.physicsBody?.isDynamic = true
+            bomb.physicsBody!.categoryBitMask = CollisionTypes.bomb.rawValue
+            bomb.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue | CollisionTypes.floor.rawValue
+            bomb.physicsBody!.collisionBitMask = CollisionTypes.bullet.rawValue | CollisionTypes.floor.rawValue | CollisionTypes.bomb.rawValue
+            
+            bomb.zPosition = 50
+            bomb.name = "bomb"
+            addChild(bomb)
+            bombs.append(bomb)
+            
+            // add a trail to the bomb, which is the target node
+            let trailNode = SKNode()
+            trailNode.zPosition = 1
+            trailNode.name = "trailNode"
+            addChild(trailNode)
+            trails.append(trailNode)
+            
+            // add the emitter
+            let trail = SKEmitterNode(fileNamed: "BallTrail")!
+            trail.targetNode = trailNode
+            trail.position = CGPoint(x: 0, y: bomb.size.height * 0.5)
+            trail.name = "trail"
+            bomb.addChild(trail)
+        } else {
+            return
+        }
         
-        // add a trail to the bomb, which is the target node
-        let trailNode = SKNode()
-        trailNode.zPosition = 1
-        trailNode.name = "trailNode"
-        addChild(trailNode)
-        trails.append(trailNode)
-        
-        // add the emitter
-        let trail = SKEmitterNode(fileNamed: "BallTrail")!
-        trail.targetNode = trailNode
-        trail.position = CGPoint(x: 0, y: bomb.size.height * 0.5)
-        trail.name = "trail"
-        bomb.addChild(trail)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -531,7 +554,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let releaseTime = 1.0
             
             let minReleaseTime = 0.5 * releaseTime
-            let maxReleaseTime = 5.0 * releaseTime
+            let maxReleaseTime = 8.0 * releaseTime
             
             let nextReleaseTime = RandomDouble(min: minReleaseTime, max: maxReleaseTime)
             
@@ -547,43 +570,53 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // ------------------------------------------------------------------------------------------
     
     func createBird() {
-        // pick which bird 
-        // random int between 1 and 6
-        let viewWidth = frame.width
-        let viewHeight = frame.height
-        let birdNumber = RandomInt(min: 1, max: 6)
-        let birdName = BirdTypes(rawValue: birdNumber)?.description
-        let birdTexture = SKTexture(imageNamed: (birdName?.appending("1"))!)
-        let bird = SKSpriteNode(texture: birdTexture)
-        scale(bird, using: scale)
-        let randomInt = CGFloat(RandomInt(min: 0, max: 0))
-        if randomInt == 0 {
-            bird.xScale = -1.0
+        
+        if gameState == .playing {
+            // pick which bird
+            // random int between 1 and 6
+            let viewWidth = frame.width
+            let viewHeight = frame.height
+            let birdNumber = RandomInt(min: 1, max: 6)
+            let birdName = BirdTypes(rawValue: birdNumber)?.description
+            let birdTexture = SKTexture(imageNamed: (birdName?.appending("1"))!)
+            let bird = SKSpriteNode(texture: birdTexture)
+            scale(bird, using: scale)
+            let randomInt = CGFloat(RandomInt(min: 0, max: 1))
+            if randomInt == 0 {
+                bird.xScale = -1.0
+            }
+            let xPos = randomInt * viewWidth + (2.0 * randomInt - 1.0) * (bird.size.width)
+            let yPos = RandomCGFloat(min: Float(0.6 * viewHeight), max: Float(0.9 * viewHeight))
+            bird.position = CGPoint(x: xPos, y: yPos)
+            bird.physicsBody = SKPhysicsBody(rectangleOf: bird.size)
+            bird.physicsBody?.isDynamic = false
+            bird.physicsBody!.categoryBitMask = CollisionTypes.bird.rawValue
+            bird.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue
+            bird.physicsBody!.collisionBitMask = CollisionTypes.bullet.rawValue
+            bird.zPosition = 50
+            bird.name = "bird"
+            addChild(bird)
+            
+            var frames = [birdTexture]
+            
+            var numFrames: Int = 9
+            if BirdTypes(rawValue: birdNumber) == .sparrow { numFrames = 8 }
+            
+            for i in 2...numFrames {
+                frames.append(SKTexture(imageNamed: (birdName?.appending(String(i)))! ))
+            }
+            
+            let fly = SKAction.animate(with: frames, timePerFrame: 0.1)
+            let flyForever = SKAction.repeatForever(fly)
+            let move = SKAction.moveBy(x: (1.0 - 2.0*randomInt) * (viewWidth + bird.size.width) , y: 0.0, duration: 5.0)
+            let remove = SKAction.removeFromParent()
+            
+            bird.run(flyForever)
+            bird.run(SKAction.sequence([move, remove]))
+        } else {
+            return
         }
-        let xPos = randomInt * viewWidth + (2.0 * randomInt - 1.0) * (bird.size.width)
-        let yPos = RandomCGFloat(min: Float(0.6 * viewHeight), max: Float(0.9 * viewHeight))
-        bird.position = CGPoint(x: xPos, y: yPos)
-        bird.physicsBody = SKPhysicsBody(rectangleOf: bird.size)
-        bird.physicsBody?.isDynamic = false
-        bird.physicsBody!.categoryBitMask = CollisionTypes.bird.rawValue
-        bird.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue
-        bird.zPosition = 50
-        bird.name = "bird"
-        addChild(bird)
         
-        var frames = [birdTexture]
-        
-        for i in 2...9 {
-            frames.append(SKTexture(imageNamed: (birdName?.appending(String(i)))! ))
-        }
-        
-        let fly = SKAction.animate(with: frames, timePerFrame: 0.1)
-        let flyForever = SKAction.repeatForever(fly)
-        let move = SKAction.moveBy(x: (1.0 - 2.0*randomInt) * (viewWidth + bird.size.width) , y: 0.0, duration: 5.0)
-        let remove = SKAction.removeFromParent()
-        
-        bird.run(flyForever)
-        bird.run(SKAction.sequence([move, remove]))
     }
     
     // ------------------------------------------------------------------------------------------
@@ -916,7 +949,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         logo = SKSpriteNode(imageNamed: "PausedLogo")
         logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
         logo.position = CGPoint(x: frame.midX, y: frame.size.height + logo.size.height)
-        logo.zPosition = 50
+        logo.zPosition = 51
         addChild(logo)
         
         let logoPosition = self.frame.midY + self.frame.height / 6
@@ -948,7 +981,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightTouch = nil
         
         for node in self.children {
-            if (node.name == "bullet" || node.name == "bomb" || node.name == "trail" || node.name == "trailNode" || node.name == "explosion") {
+            if (node.name == "bullet" || node.name == "bomb" || node.name == "trail" || node.name == "trailNode" || node.name == "explosion" || node.name == "bird") {
                node.isPaused = true
             }
         }
