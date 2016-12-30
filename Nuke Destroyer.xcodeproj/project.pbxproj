@@ -159,6 +159,7 @@
 		AE6549981E09F81A008784E8 /* Bomb@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE6549961E09F81A008784E8 /* Bomb@3x.png */; };
 		AE6549991E09F81A008784E8 /* Bomb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE6549971E09F81A008784E8 /* Bomb@2x.png */; };
 		AE9AF8021E0CE08D0026D3ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE9AF8011E0CE08D0026D3ED /* Assets.xcassets */; };
+		AEBE57D71E1615C700781DAB /* PausedLogo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AEBE57D61E1615C700781DAB /* PausedLogo@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -337,6 +338,7 @@
 		AE6549961E09F81A008784E8 /* Bomb@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bomb@3x.png"; sourceTree = "<group>"; };
 		AE6549971E09F81A008784E8 /* Bomb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bomb@2x.png"; sourceTree = "<group>"; };
 		AE9AF8011E0CE08D0026D3ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AEBE57D61E1615C700781DAB /* PausedLogo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PausedLogo@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -540,6 +542,7 @@
 		AE6548E71E086394008784E8 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				AEBE57D61E1615C700781DAB /* PausedLogo@3x.png */,
 				AE3B558C1E15B9430022F068 /* pauseButton@3x.png */,
 				AE3B557C1E14858E0022F068 /* BallTrail.sks */,
 				AE3B55801E14869C0022F068 /* Star@2x.png */,
@@ -744,6 +747,7 @@
 				AE6549421E08974D008784E8 /* turret_2_17.png in Resources */,
 				AE65493F1E08974D008784E8 /* turret_2_14.png in Resources */,
 				AE6549391E08974D008784E8 /* turret_2_8.png in Resources */,
+				AEBE57D71E1615C700781DAB /* PausedLogo@3x.png in Resources */,
 				AE3B556B1E1324D70022F068 /* Publications.jpg in Resources */,
 				AE3B54D21E0C47F40022F068 /* MyParticle.sks in Resources */,
 				AE3B55731E1324D70022F068 /* technicalexperience3.jpg in Resources */,

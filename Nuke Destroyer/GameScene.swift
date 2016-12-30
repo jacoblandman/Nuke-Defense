@@ -824,7 +824,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func presentPauseMenu() {
         
         playButton.texture = SKTexture(imageNamed: "PlayButton")
-        logo = SKSpriteNode(imageNamed: "Logo")
+        logo = SKSpriteNode(imageNamed: "PausedLogo")
         logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
         logo.position = CGPoint(x: frame.midX, y: frame.size.height + logo.size.height)
         logo.zPosition = 50
