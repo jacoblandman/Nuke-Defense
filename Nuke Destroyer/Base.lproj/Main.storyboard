@@ -104,8 +104,8 @@
         <!--Resume-->
         <scene sceneID="1DC-ZT-NHY">
             <objects>
-                <collectionViewController title="Resume" id="pgO-SZ-Rzo" customClass="ResumeCollectionViewController" customModule="Nuke_Destroyer" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="C3H-BY-twk">
+                <collectionViewController title="Resume" extendedLayoutIncludesOpaqueBars="YES" id="pgO-SZ-Rzo" customClass="ResumeCollectionViewController" customModule="Nuke_Destroyer" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="C3H-BY-twk">
                         <rect key="frame" x="0.0" y="0.0" width="736" height="414"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

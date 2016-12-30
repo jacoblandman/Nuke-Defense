@@ -120,6 +120,8 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
     // ------------------------------------------------------------------------------------------
     
     func tappedResume(_ sender: Any) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.landscapeOnly = false
         performSegue(withIdentifier: "segueToTab", sender: self)
     }
     
@@ -141,11 +143,12 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
         let labelStartingPosition: CGFloat = labelHeight + yOffset
         
         nameLabel = UILabel()
-        nameLabel.frame = CGRect(x: xOffset, y: labelStartingPosition, width: viewWidth - 2.0 * yOffset, height: labelHeight)
+        nameLabel.frame = CGRect(x: xOffset, y: labelStartingPosition, width: viewWidth - 2.0 * xOffset, height: labelHeight)
         nameLabel.text = "Jacob Taylor Landman"
         nameLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: labelHeight)
         nameLabel.adjustsFontSizeToFitWidth = true
-        nameLabel.frame = CGRect(x: xOffset, y: yOffset, width: viewWidth - 2.0 * yOffset, height: nameLabel.font.pointSize)
+        nameLabel.frame = CGRect(x: xOffset, y: yOffset, width: viewWidth - 2.0 * xOffset, height: nameLabel.font.pointSize)
+        nameLabel.textAlignment = .center
         view.addSubview(nameLabel)
     }
     
@@ -208,8 +211,10 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
     func addConstraints() {
         
         // the size of the screen is in points
-        let yDistance: CGFloat = 40
-        let xDistance: CGFloat = 80
+        let buttonWidth: CGFloat = view.frame.width * 0.25
+        let buttonHeight: CGFloat = view.frame.height * 0.6 * 0.66
+        let yDistance: CGFloat = ( view.frame.height - 2 * buttonHeight ) / 3
+        let xDistance: CGFloat = ( view.frame.width - 2 * buttonWidth ) / 3
         let viewHeight = view.frame.height
     
         // resume button constraints

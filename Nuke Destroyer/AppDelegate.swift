@@ -41,13 +41,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-    public var landscapeOnly = true
+    open var landscapeOnly = true
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         if landscapeOnly {
             return .landscape
-        }
-        else {
-            return .portrait
+        } else {
+            return .allButUpsideDown    
         }
     }
 }

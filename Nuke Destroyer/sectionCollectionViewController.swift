@@ -29,6 +29,7 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         originalNavController?.isNavigationBarHidden = true
+        navigationController?.isNavigationBarHidden = false
         
         hidingNavigationBarManager?.viewWillAppear(animated)
     }

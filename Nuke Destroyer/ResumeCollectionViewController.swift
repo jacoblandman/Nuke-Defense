@@ -35,29 +35,66 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.isNavigationBarHidden = false
+
         collectionView?.backgroundColor = UIColor.white
                 
         // set the collection view layout
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        setItemSize(for: layout)
-        collectionView!.collectionViewLayout = layout
+        setLayoutFor(collectionView!, with: collectionView!.frame.size)
         
         // load the labels for each cell in the table
         loadSections()
         
         // do the hiding navigation bar stuff, which hides the nav bar and tab bar when scolling vertically
-        hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: collectionView!)
+        //hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: collectionView!)
         
         if let tabBar = tabBarController?.tabBar {
             print("tab bar is added")
-            hidingNavigationBarManager?.manageBottomBar(tabBar)
+            //hidingNavigationBarManager?.manageBottomBar(tabBar)
             
         }
         
-        hidingNavigationBarManager?.onForegroundAction = .show
-        hidingNavigationBarManager?.expansionResistance = 125
+        //hidingNavigationBarManager?.onForegroundAction = .show
+        //hidingNavigationBarManager?.expansionResistance = 125
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func setLayoutFor(_ collectionView: UICollectionView, with size: CGSize) {
+        
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        
+        if size.width > size.height {
+            
+            originalNavController?.hidesBarsOnSwipe = false
+            originalNavController?.isNavigationBarHidden = false
+            navigationController?.hidesBarsOnSwipe = false
+            navigationController?.isNavigationBarHidden = false
+            
+            layout.scrollDirection = .horizontal
+            setItemSize(for: layout, with: size)
+        } else {
+            //navigationController?.isNavigationBarHidden = false
+            //originalNavController?.hidesBarsOnSwipe = true
+            //navigationController?.hidesBarsOnSwipe = true
+            layout.scrollDirection = .vertical
+            setItemSize(for: layout, with: size)
+        }
+        
+        collectionView.collectionViewLayout = layout
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setLayoutFor(collectionView!, with: size)
+        collectionView!.reloadData()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        //navigationController?.isNavigationBarHidden = true
     }
     
     // ------------------------------------------------------------------------------------------
@@ -89,7 +126,7 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     
     // ------------------------------------------------------------------------------------------
     
-    func setItemSize(for layout: UICollectionViewFlowLayout) {
+    func setItemSize(for layout: UICollectionViewFlowLayout, with size: CGSize) {
         // tab height should be 49
         let tabHeight: CGFloat
         if let tb = tabBarController {
@@ -108,16 +145,24 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
             navHeight = 44
         }
         
-        let viewWidth = view.frame.width
-        let viewHeight = view.frame.height
+        let viewWidth = size.width
+        let viewHeight = size.height
         
-        layout.minimumInteritemSpacing = 0.03 * viewWidth
-        layout.minimumLineSpacing = 0.03 * viewWidth
-        layout.sectionInset = UIEdgeInsets(top: 0.03 * viewHeight, left: 0.03 * viewWidth, bottom: 0.03 * viewHeight, right: 0.03 * viewWidth)
-        
-        layout.itemSize = CGSize(width: viewWidth - layout.sectionInset.left - layout.sectionInset.right,
-                                 height: viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight)
-        
+        if viewWidth > viewHeight {
+            layout.minimumInteritemSpacing = 0.03 * viewWidth
+            layout.minimumLineSpacing = 0.03 * viewWidth
+            layout.sectionInset = UIEdgeInsets(top: 0.03 * viewHeight, left: 0.03 * viewWidth, bottom: 0.03 * viewHeight, right: 0.03 * viewWidth)
+            let height = viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight - 10
+            print(height)
+            layout.itemSize = CGSize(width: viewWidth - layout.sectionInset.left - layout.sectionInset.right,
+                                     height: viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight)
+        } else {
+            layout.minimumInteritemSpacing = 1
+            layout.minimumLineSpacing = 1
+            layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1 , right: 1)
+            layout.itemSize = CGSize(width: viewWidth - layout.sectionInset.left - layout.sectionInset.right,
+                                     height: (viewHeight - navHeight - tabHeight - layout.minimumLineSpacing) / 3.0)
+        }
     }
     
     // ------------------------------------------------------------------------------------------
@@ -227,7 +272,7 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        hidingNavigationBarManager?.viewDidLayoutSubviews()
+        //hidingNavigationBarManager?.viewDidLayoutSubviews()
     }
     
     // ------------------------------------------------------------------------------------------
@@ -235,13 +280,13 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        hidingNavigationBarManager?.viewWillDisappear(animated)
+        //hidingNavigationBarManager?.viewWillDisappear(animated)
     }
     
     // ------------------------------------------------------------------------------------------
     
     override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        hidingNavigationBarManager?.shouldScrollToTop()
+        //hidingNavigationBarManager?.shouldScrollToTop()
         
         return true
     }
