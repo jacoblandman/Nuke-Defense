@@ -22,6 +22,27 @@ enum CollisionTypes: UInt32 {
     case floor = 4
 }
 
+enum BirdTypes: Int {
+    case chicken = 1
+    case duck = 2
+    case goose = 3
+    case owl = 4
+    case sparrow = 5
+    case vulture = 6
+    
+    var description : String {
+        switch self {
+        // Use Internationalization, as appropriate.
+        case .chicken: return "chicken"
+        case .duck: return "duck"
+        case .goose: return "goose"
+        case .owl: return "owl"
+        case .sparrow: return "sparrow"
+        case .vulture: return "vulture"
+        }
+    }
+}
+
 class turret: SKSpriteNode {
     var canFire: Bool = true
 }
@@ -446,7 +467,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let bomb = SKSpriteNode(imageNamed: "Bomb")
         scale(bomb, using: scale)
-        let xPos = RandomCGFloat(min: Float(bomb.size.width), max: Float(frame.size.width - bomb.size.width))
+        let xPos = RandomCGFloat(min: Float(2.0 * bomb.size.width), max: Float(frame.size.width - 2.0 * bomb.size.width))
         bomb.position = CGPoint(x: xPos, y: frame.size.height + bomb.size.height * 0.5)
         bomb.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         bomb.physicsBody = SKPhysicsBody(rectangleOf: bomb.size)
@@ -496,6 +517,72 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             return
         }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func startBirds() {
+        
+        if gameState == .playing {
+            
+            // for now lets release a bird every half a second to 5 seconds
+            
+            let releaseTime = 1.0
+            
+            let minReleaseTime = 0.5 * releaseTime
+            let maxReleaseTime = 5.0 * releaseTime
+            
+            let nextReleaseTime = RandomDouble(min: minReleaseTime, max: maxReleaseTime)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + nextReleaseTime) { [unowned self] in
+                self.createBird()
+                self.startBirds()
+            }
+        } else {
+            return
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func createBird() {
+        // pick which bird 
+        // random int between 1 and 6
+        let viewWidth = frame.width
+        let viewHeight = frame.height
+        let birdNumber = RandomInt(min: 1, max: 6)
+        let birdName = BirdTypes(rawValue: birdNumber)?.description
+        let birdTexture = SKTexture(imageNamed: (birdName?.appending("1"))!)
+        let bird = SKSpriteNode(texture: birdTexture)
+        scale(bird, using: scale)
+        let randomInt = CGFloat(RandomInt(min: 0, max: 0))
+        if randomInt == 0 {
+            bird.xScale = -1.0
+        }
+        let xPos = randomInt * viewWidth + (2.0 * randomInt - 1.0) * (bird.size.width)
+        let yPos = RandomCGFloat(min: Float(0.6 * viewHeight), max: Float(0.9 * viewHeight))
+        bird.position = CGPoint(x: xPos, y: yPos)
+        bird.physicsBody = SKPhysicsBody(rectangleOf: bird.size)
+        bird.physicsBody?.isDynamic = false
+        //bird.physicsBody!.categoryBitMask = CollisionTypes.bomb.rawValue
+        //bird.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue | CollisionTypes.floor.rawValue
+        bird.zPosition = 50
+        bird.name = "bird"
+        addChild(bird)
+        
+        var frames = [birdTexture]
+        
+        for i in 2...9 {
+            frames.append(SKTexture(imageNamed: (birdName?.appending(String(i)))! ))
+        }
+        
+        let fly = SKAction.animate(with: frames, timePerFrame: 0.2)
+        let flyForever = SKAction.repeatForever(fly)
+        let move = SKAction.moveBy(x: (1.0 - 2.0*randomInt) * (viewWidth + bird.size.width) , y: 0.0, duration: 5.0)
+        let remove = SKAction.removeFromParent()
+        
+        bird.run(flyForever)
+        bird.run(SKAction.sequence([move, remove]))
     }
     
     // ------------------------------------------------------------------------------------------
@@ -705,7 +792,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let sprite = SKSpriteNode(texture: frames[0])
         var whiteSpace: CGFloat = 30
         scale(sprite, using: scale)
-        scale(sprite, using: 2)
+        scale(sprite, using: 3)
         whiteSpace = whiteSpace * 2 * scale
         sprite.position = CGPoint(x: frame.midX, y: sprite.size.height / 2 - whiteSpace)
         sprite.zPosition = 50
@@ -768,6 +855,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                     self.gameState = .playing
                     self.releaseBombs()
+                    self.startBirds()
                 }
             
         } else if (name == "developerButton") {
