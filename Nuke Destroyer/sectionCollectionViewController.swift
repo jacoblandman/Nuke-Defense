@@ -17,7 +17,6 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     var imageNames = [String]()
     var cellAccessory: UITableViewCellAccessoryType = .none
     var selectedIndexPath: IndexPath?
-    var hidingNavigationBarManager: HidingNavigationBarManager?
     var originalNavController: UINavigationController?
     
     
@@ -30,8 +29,6 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
         super.viewWillAppear(animated)
         originalNavController?.isNavigationBarHidden = true
         navigationController?.isNavigationBarHidden = false
-        
-        hidingNavigationBarManager?.viewWillAppear(animated)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -48,15 +45,38 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
         
         // set the collection view layout
         collectionView?.backgroundColor = UIColor.white
+        setLayoutFor(collectionView!, with: collectionView!.frame.size)
+        
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func setLayoutFor(_ collectionView: UICollectionView, with size: CGSize) {
+        
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        setItemSize(for: layout)
-        collectionView!.collectionViewLayout = layout
         
-        hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: collectionView!)
-        hidingNavigationBarManager?.onForegroundAction = .show
-        hidingNavigationBarManager?.expansionResistance = 125
+        if size.width > size.height {
+            
+            originalNavController?.isNavigationBarHidden = true
+            navigationController?.isNavigationBarHidden = false
+            
+            layout.scrollDirection = .horizontal
+            setItemSize(for: layout, with: size)
+        } else {
+            layout.scrollDirection = .vertical
+            setItemSize(for: layout, with: size)
+        }
         
+        collectionView.collectionViewLayout = layout
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        
+        setLayoutFor(collectionView!, with: size)
+        collectionView!.reloadData()
+        super.viewWillTransition(to: size, with: coordinator)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -74,7 +94,7 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
     
     // ------------------------------------------------------------------------------------------
     
-    func setItemSize(for layout: UICollectionViewFlowLayout) {
+    func setItemSize(for layout: UICollectionViewFlowLayout, with size: CGSize) {
         // tab height should be 49
         let tabHeight: CGFloat
         if let tb = tabBarController {
@@ -93,16 +113,24 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
             navHeight = 44
         }
         
-        let viewWidth = view.frame.width
-        let viewHeight = view.frame.height
+        let viewWidth = size.width
+        let viewHeight = size.height
         
-        layout.minimumInteritemSpacing = 0.03 * viewWidth
-        layout.minimumLineSpacing = 0.03 * viewWidth
-        layout.sectionInset = UIEdgeInsets(top: 0.03 * viewHeight, left: 0.03 * viewWidth, bottom: 0.03 * viewHeight, right: 0.03 * viewWidth)
-        
-        layout.itemSize = CGSize(width: viewWidth - layout.sectionInset.left - layout.sectionInset.right,
-                                 height: viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight)
-        
+        if viewWidth > viewHeight {
+            layout.minimumInteritemSpacing = 0.03 * viewWidth
+            layout.minimumLineSpacing = 0.03 * viewWidth
+            layout.sectionInset = UIEdgeInsets(top: 0.03 * viewHeight, left: 0.03 * viewWidth, bottom: 0.03 * viewHeight, right: 0.03 * viewWidth)
+            let height = viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight - 10
+            print(height)
+            layout.itemSize = CGSize(width: viewWidth - layout.sectionInset.left - layout.sectionInset.right,
+                                     height: viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight)
+        } else {
+            layout.minimumInteritemSpacing = 1
+            layout.minimumLineSpacing = 1
+            layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1 , right: 1)
+            layout.itemSize = CGSize(width: viewWidth - layout.sectionInset.left - layout.sectionInset.right,
+                                     height: (viewHeight - navHeight - tabHeight - layout.minimumLineSpacing) / 3.0)
+        }
     }
     
     // ------------------------------------------------------------------------------------------
@@ -292,30 +320,6 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
         })
         
         present(ac, animated: true)
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        hidingNavigationBarManager?.viewDidLayoutSubviews()
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        hidingNavigationBarManager?.viewWillDisappear(animated)
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        hidingNavigationBarManager?.shouldScrollToTop()
-        
-        return true
     }
     
     // ------------------------------------------------------------------------------------------

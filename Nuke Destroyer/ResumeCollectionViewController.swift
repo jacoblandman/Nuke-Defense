@@ -26,7 +26,6 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     var sections = [String]()
     var selectedIndexPath: IndexPath?
     var selectedSection: String?
-    var hidingNavigationBarManager: HidingNavigationBarManager?
     var originalNavController: UINavigationController?
     
     
@@ -43,18 +42,6 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
         
         // load the labels for each cell in the table
         loadSections()
-        
-        // do the hiding navigation bar stuff, which hides the nav bar and tab bar when scolling vertically
-        //hidingNavigationBarManager = HidingNavigationBarManager(viewController: self, scrollView: collectionView!)
-        
-        if let tabBar = tabBarController?.tabBar {
-            print("tab bar is added")
-            //hidingNavigationBarManager?.manageBottomBar(tabBar)
-            
-        }
-        
-        //hidingNavigationBarManager?.onForegroundAction = .show
-        //hidingNavigationBarManager?.expansionResistance = 125
     }
     
     // ------------------------------------------------------------------------------------------
@@ -65,17 +52,12 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
         
         if size.width > size.height {
             
-            originalNavController?.hidesBarsOnSwipe = false
             originalNavController?.isNavigationBarHidden = false
-            navigationController?.hidesBarsOnSwipe = false
             navigationController?.isNavigationBarHidden = false
             
             layout.scrollDirection = .horizontal
             setItemSize(for: layout, with: size)
         } else {
-            //navigationController?.isNavigationBarHidden = false
-            //originalNavController?.hidesBarsOnSwipe = true
-            //navigationController?.hidesBarsOnSwipe = true
             layout.scrollDirection = .vertical
             setItemSize(for: layout, with: size)
         }
@@ -86,15 +68,10 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
     // ------------------------------------------------------------------------------------------
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
+        
         setLayoutFor(collectionView!, with: size)
         collectionView!.reloadData()
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        //navigationController?.isNavigationBarHidden = true
+        super.viewWillTransition(to: size, with: coordinator)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -108,7 +85,6 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
         originalNavController?.isNavigationBarHidden = false
         navigationController?.hidesBarsOnSwipe = false
         
-        hidingNavigationBarManager?.viewWillAppear(animated)
     }
     
     // ------------------------------------------------------------------------------------------
@@ -265,30 +241,6 @@ class ResumeCollectionViewController: UICollectionViewController, UICollectionVi
                 print("When preparing to segue, the destination isn't correct")
             }
         }
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        //hidingNavigationBarManager?.viewDidLayoutSubviews()
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        //hidingNavigationBarManager?.viewWillDisappear(animated)
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        //hidingNavigationBarManager?.shouldScrollToTop()
-        
-        return true
     }
     
     // ------------------------------------------------------------------------------------------

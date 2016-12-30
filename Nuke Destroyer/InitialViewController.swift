@@ -48,18 +48,28 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
         
         navigationController?.isNavigationBarHidden = false
         navigationController?.hidesBarsOnSwipe = false
+        if (UIApplication.shared.statusBarOrientation != .landscapeLeft && UIApplication.shared.statusBarOrientation != .landscapeRight) {
+            let value = UIDeviceOrientation.landscapeRight.rawValue
+            UIDevice.current.setValue(value, forKey: "orientation")
+        }
+        setConstraintsForView(with: view.frame.size)
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.landscapeOnly = true
     }
+
+    // ------------------------------------------------------------------------------------------
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        setConstraintsForView(with: size)
     }
     
     // ------------------------------------------------------------------------------------------
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        addConstraints()
         
     }
     
@@ -73,6 +83,8 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
     // ------------------------------------------------------------------------------------------
     
     func tappedIOSExperience(_ sender: Any) {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.landscapeOnly = false
         performSegue(withIdentifier: "segueToIOS", sender: self)
         
     }
@@ -208,39 +220,79 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
     // ------------------------------------------------------------------------------------------
     // add all the constraints for the buttons and labels
     
-    func addConstraints() {
+    func setConstraintsForView(with size: CGSize) {
         
-        // the size of the screen is in points
-        let buttonWidth: CGFloat = view.frame.width * 0.25
-        let buttonHeight: CGFloat = view.frame.height * 0.6 * 0.66
-        let yDistance: CGFloat = ( view.frame.height - 2 * buttonHeight ) / 3
-        let xDistance: CGFloat = ( view.frame.width - 2 * buttonWidth ) / 3
-        let viewHeight = view.frame.height
-    
-        // resume button constraints
-        NSLayoutConstraint(item: resumeButton, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1.0, constant: 0.33 * viewHeight + yDistance).isActive = true
-        NSLayoutConstraint(item: resumeButton, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: xDistance).isActive = true
-        NSLayoutConstraint(item: resumeButton, attribute: .width, relatedBy: .equal, toItem: view, attribute: .width, multiplier: 0.5, constant: -1.5 * xDistance).isActive = true
-        NSLayoutConstraint(item: resumeButton, attribute: .height, relatedBy: .equal, toItem: view, attribute: .height, multiplier: 0.5 * 0.66, constant: -1.5 * yDistance).isActive = true
         
-        // ios button constraints
-        NSLayoutConstraint(item: iosButton, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1.0, constant: 0.33 * viewHeight + yDistance).isActive = true
-        NSLayoutConstraint(item: iosButton, attribute: .leading, relatedBy: .equal, toItem: resumeButton, attribute: .trailing, multiplier: 1.0, constant: xDistance).isActive = true
-        NSLayoutConstraint(item: iosButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
-        NSLayoutConstraint(item: iosButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
+        for constraint  in view.constraints {
+            print(constraint)
+        }
+        view.removeConstraints(view.constraints)
+        print("removing")
+        for constraint  in view.constraints {
+            print(constraint)
+        }
         
-        // facebook button constraints
-        NSLayoutConstraint(item: facebookButton, attribute: .top, relatedBy: .equal, toItem: resumeButton, attribute: .bottom, multiplier: 1.0, constant: yDistance).isActive = true
-        NSLayoutConstraint(item: facebookButton, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: xDistance).isActive = true
-        NSLayoutConstraint(item: facebookButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
-        NSLayoutConstraint(item: facebookButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
+        let viewWidth = size.width
+        let viewHeight = size.height
         
-        // linkedin button constraints
-        NSLayoutConstraint(item: linkedinButton, attribute: .top, relatedBy: .equal, toItem: iosButton, attribute: .bottom, multiplier: 1.0, constant: yDistance).isActive = true
-        NSLayoutConstraint(item: linkedinButton, attribute: .leading, relatedBy: .equal, toItem: facebookButton, attribute: .trailing, multiplier: 1.0, constant: xDistance).isActive = true
-        NSLayoutConstraint(item: linkedinButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
-        NSLayoutConstraint(item: linkedinButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
-        
+        if viewWidth > viewHeight {
+            // the size of the screen is in points
+            let buttonWidth: CGFloat = viewWidth * 0.25
+            let buttonHeight: CGFloat = viewHeight * 0.6 * 0.66
+            let yDistance: CGFloat = ( viewHeight - 2 * buttonHeight ) / 3
+            let xDistance: CGFloat = ( viewWidth - 2 * buttonWidth ) / 3
+            
+            // resume button constraints
+            NSLayoutConstraint(item: resumeButton, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1.0, constant: 0.33 * viewHeight + yDistance).isActive = true
+            NSLayoutConstraint(item: resumeButton, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: xDistance).isActive = true
+            NSLayoutConstraint(item: resumeButton, attribute: .width, relatedBy: .equal, toItem: view, attribute: .width, multiplier: 0.5, constant: -1.5 * xDistance).isActive = true
+            NSLayoutConstraint(item: resumeButton, attribute: .height, relatedBy: .equal, toItem: view, attribute: .height, multiplier: 0.5 * 0.66, constant: -1.5 * yDistance).isActive = true
+            
+            // ios button constraints
+            NSLayoutConstraint(item: iosButton, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1.0, constant: 0.33 * viewHeight + yDistance).isActive = true
+            NSLayoutConstraint(item: iosButton, attribute: .leading, relatedBy: .equal, toItem: resumeButton, attribute: .trailing, multiplier: 1.0, constant: xDistance).isActive = true
+            NSLayoutConstraint(item: iosButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: iosButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
+            
+            // facebook button constraints
+            NSLayoutConstraint(item: facebookButton, attribute: .top, relatedBy: .equal, toItem: resumeButton, attribute: .bottom, multiplier: 1.0, constant: yDistance).isActive = true
+            NSLayoutConstraint(item: facebookButton, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1.0, constant: xDistance).isActive = true
+            NSLayoutConstraint(item: facebookButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: facebookButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
+            
+            // linkedin button constraints
+            NSLayoutConstraint(item: linkedinButton, attribute: .top, relatedBy: .equal, toItem: iosButton, attribute: .bottom, multiplier: 1.0, constant: yDistance).isActive = true
+            NSLayoutConstraint(item: linkedinButton, attribute: .leading, relatedBy: .equal, toItem: facebookButton, attribute: .trailing, multiplier: 1.0, constant: xDistance).isActive = true
+            NSLayoutConstraint(item: linkedinButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: linkedinButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
+        } else {
+            
+            let offsetFromBottom: CGFloat = 60
+            let distanceBetween: CGFloat = 20
+            
+            // iOS button constraints
+            NSLayoutConstraint(item: resumeButton, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1.0, constant: 0.5 * view.frame.height).isActive = true
+            NSLayoutConstraint(item: resumeButton, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0.0).isActive = true
+            
+            // facebook button constraints
+            NSLayoutConstraint(item: facebookButton, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: facebookButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: facebookButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: facebookButton, attribute: .top, relatedBy: .equal, toItem: resumeButton, attribute: .bottom, multiplier: 1.0, constant: distanceBetween).isActive = true
+            
+            // linkedin button constraints
+            NSLayoutConstraint(item: linkedinButton, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: linkedinButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: linkedinButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: linkedinButton, attribute: .top, relatedBy: .equal, toItem: facebookButton, attribute: .bottom, multiplier: 1.0, constant: distanceBetween).isActive = true
+            
+            // resume button constraints
+            NSLayoutConstraint(item: iosButton, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: iosButton, attribute: .width, relatedBy: .equal, toItem: resumeButton, attribute: .width, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: iosButton, attribute: .height, relatedBy: .equal, toItem: resumeButton, attribute: .height, multiplier: 1.0, constant: 0.0).isActive = true
+            NSLayoutConstraint(item: iosButton, attribute: .top, relatedBy: .equal, toItem: linkedinButton, attribute: .bottom, multiplier: 1.0, constant: distanceBetween).isActive = true
+            NSLayoutConstraint(item: iosButton, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1.0, constant: -offsetFromBottom).isActive = true
+        }
         
     }
     

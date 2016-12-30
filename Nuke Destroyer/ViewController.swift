@@ -31,12 +31,7 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
         fillProjectsArray()
         
         collectionView?.backgroundColor = UIColor.lightGray
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
-        //layout.itemSize = CGSize(width: screenWidth/3, height: screenWidth/3)
-        layout.minimumInteritemSpacing = 1
-        layout.minimumLineSpacing = 1
-        collectionView!.collectionViewLayout = layout
+        setLayoutFor(collectionView!, with: collectionView!.frame.size)
         
         // load UserDefaults if it exists there already
         let defaults = UserDefaults.standard
@@ -74,6 +69,60 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: Notification.Name.UIApplicationWillResignActive, object: nil)
         
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func setLayoutFor(_ collectionView: UICollectionView, with size: CGSize) {
+        
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        
+        if size.width > size.height {
+            navigationController?.isNavigationBarHidden = false
+            layout.scrollDirection = .vertical
+            setItemSize(for: layout, with: size)
+            
+        } else {
+            layout.scrollDirection = .vertical
+            setItemSize(for: layout, with: size)
+        }
+        
+        collectionView.collectionViewLayout = layout
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        
+        setLayoutFor(collectionView!, with: size)
+        collectionView!.reloadData()
+        super.viewWillTransition(to: size, with: coordinator)
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func setItemSize(for layout: UICollectionViewFlowLayout, with size: CGSize) {
+        // nav height shoudl be 44
+        let navHeight: CGFloat
+        if let nc = navigationController {
+            navHeight = nc.navigationBar.frame.size.height
+        } else {
+            print("the nav controller is nil")
+            navHeight = 44
+        }
+        
+        let viewWidth = size.width
+        let viewHeight = size.height
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 1
+        layout.sectionInset = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
+        
+        if viewWidth > viewHeight {
+            layout.itemSize = CGSize(width: viewWidth * 0.5 - 1.5, height: (viewHeight - navHeight) * 0.5 - 1.0)
+        } else {
+            layout.itemSize = CGSize(width: (viewWidth - layout.sectionInset.left - layout.sectionInset.right - layout.minimumLineSpacing),
+                                     height: (viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight) / 5)
+        }
     }
     
     // ------------------------------------------------------------------------------------------
@@ -124,22 +173,6 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
     }
     
     // ------------------------------------------------------------------------------------------
-    // the following two functions make sure auto layout does the hard work for us to automatically size every cell
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let navHeight: CGFloat
-        if let nc = navigationController {
-            navHeight = nc.navigationBar.frame.size.height
-        } else {
-            print("the nav controller is nil")
-            navHeight = 44
-        }
-
-        
-        return CGSize(width: collectionView.frame.width * 0.5 - 1.5, height: (collectionView.frame.height - navHeight) * 0.5 - 1.0)
-    }
-    
-    // ------------------------------------------------------------------------------------------
     
     func fillProjectsArray() {
         projects.append(["Project 1: Storm Viewer", "Constants and variables, UITableView, UIImageView, FileManager, storyboards"])
@@ -181,7 +214,7 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
         projects.append(["Project 37: Psychic Tester", "CAEmitterLayer, CAGradientLayer, @IBDesignable, @IBInspectable, 3D card flip effect, 3D Touch, WCSession, watchOS app"])
         projects.append(["Project 38: GitHub Commits", "Core Data, NSFetchRequest, NSManagedObject, NSPredicate, NSSortDescriptor, NSFetchedResultsController"])
         projects.append(["Project 39: Unit testing with XCTest", "filter(), measure(), functions as parameters, user interface testing with XCTest"])
-        projects.append(["", ""])
+        projects.append(["Hacking With Swift", ""])
     }
     
     // ------------------------------------------------------------------------------------------
@@ -238,9 +271,7 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
     // ------------------------------------------------------------------------------------------
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         showTutorial(indexPath.item)
-        //collectionView.deselectItem(at: indexPath, animated: true)
     }
     
     // ------------------------------------------------------------------------------------------

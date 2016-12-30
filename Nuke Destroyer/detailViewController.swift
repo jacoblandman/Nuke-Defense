@@ -34,12 +34,7 @@ class detailViewController: UICollectionViewController {
         title = date
         
         // set the collection view layout
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
-        setItemSize(for: layout)
-        collectionView!.collectionViewLayout = layout
+        setLayoutFor(collectionView!, with: collectionView!.frame.size)
         
         self.navigationController?.navigationBar.backItem?.backBarButtonItem?.title = "Back"
 
@@ -52,9 +47,37 @@ class detailViewController: UICollectionViewController {
     }
     
     // ------------------------------------------------------------------------------------------
-
     
-    func setItemSize(for layout: UICollectionViewFlowLayout) {
+    func setLayoutFor(_ collectionView: UICollectionView, with size: CGSize) {
+        
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        
+        if size.width > size.height {
+            
+            navigationController?.isNavigationBarHidden = false
+            
+            layout.scrollDirection = .horizontal
+            setItemSize(for: layout, with: size)
+        } else {
+            layout.scrollDirection = .vertical
+            setItemSize(for: layout, with: size)
+        }
+        
+        collectionView.collectionViewLayout = layout
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        
+        setLayoutFor(collectionView!, with: size)
+        collectionView!.reloadData()
+        super.viewWillTransition(to: size, with: coordinator)
+    }
+
+    // ------------------------------------------------------------------------------------------
+    
+    func setItemSize(for layout: UICollectionViewFlowLayout, with size: CGSize) {
         // tab height should be 49
         let tabHeight: CGFloat
         if let tb = tabBarController {
@@ -73,14 +96,19 @@ class detailViewController: UICollectionViewController {
             navHeight = 44
         }
         
-        let viewWidth = view.frame.width
-        let viewHeight = view.frame.height
-        
+        let viewWidth = size.width
+        let viewHeight = size.height
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
         layout.sectionInset = UIEdgeInsets(top: 0.03 * viewHeight, left: 0.03 * viewWidth, bottom: 0.03 * viewHeight, right: 0.03 * viewWidth)
         
-        layout.itemSize = CGSize(width: (viewWidth - layout.sectionInset.left - layout.sectionInset.right - layout.minimumLineSpacing) / 2,
-                                 height: viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight)
-        
+        if viewWidth > viewHeight {
+            layout.itemSize = CGSize(width: (viewWidth - layout.sectionInset.left - layout.sectionInset.right - layout.minimumLineSpacing) / 2,
+                                     height: viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight)
+        } else {
+            layout.itemSize = CGSize(width: (viewWidth - layout.sectionInset.left - layout.sectionInset.right - layout.minimumLineSpacing),
+                                     height: (viewHeight - layout.sectionInset.bottom - layout.sectionInset.top - navHeight - tabHeight) / 2)
+        }
     }
     
     // ------------------------------------------------------------------------------------------
