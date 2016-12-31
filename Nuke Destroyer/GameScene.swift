@@ -1152,7 +1152,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             useSound = true
             soundButton.texture = SKTexture(imageNamed: "sound")
-            addChild(backgroundSound!)
+            setBackgroundSound()
         }
         
         let defaults = UserDefaults.standard
