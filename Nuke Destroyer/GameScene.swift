@@ -987,44 +987,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let name = button.name!
         if name == "playButton" {
-            
-            // create the actions to start the game
-            // move the buttons down
-            // move the logo up
-            // remove the logo
-            // fade the background alpha
-            
-            if (needsReset) {
-                reset()
-                needsReset = false
-            }
-            
-            let moveDown = SKAction.moveTo(y: 0.0 - playButton.size.height, duration: 0.2)
-            let moveUp = SKAction.moveTo(y: frame.size.height + logo.size.height, duration: 0.2)
-            let remove = SKAction.removeFromParent()
-            let wait = SKAction.wait(forDuration: 0.2)
-            let fadeAlpha = SKAction.fadeAlpha(to: 1.0, duration: 0.2)
-            let moveLogo = SKAction.run { [unowned self] in
-                self.logo.run(SKAction.sequence([moveUp, remove, wait]))
-            }
-            let fadeBackground = SKAction.run{ [unowned self] in
-                self.background.run(fadeAlpha)
-                self.pauseButton.run(fadeAlpha)
-            }
-            let fadeSound = SKAction.run { [unowned self] in
-                self.soundButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
-            }
-            playButton.run(SKAction.sequence([moveDown, fadeSound, wait ]))
-            developerButton.run(SKAction.sequence([moveDown, wait, moveLogo, fadeBackground]))
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
-                    // set the gameState to playing and release the bombs
-                    if self.gameState == .paused { self.unpauseGame() }
-                
-                    self.gameState = .playing
-                    self.releaseBombs()
-                    self.startBirds()
-                }
+            beginPlay()
             
         } else if (name == "developerButton") {
             // change the view to the developer info stuff
@@ -1236,10 +1199,63 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func checkForSound() {
         if useSound {
-            addChild(backgroundSound!)
+            if backgroundSound?.parent == nil {
+                setBackgroundSound()
+            }
         }
     }
     
     // ------------------------------------------------------------------------------------------
+    
+    func removeSound() {
+        if let sound = backgroundSound {
+            if sound.parent != nil {
+                sound.removeFromParent()
+            }
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func beginPlay() {
+        // create the actions to start the game
+        // move the buttons down
+        // move the logo up
+        // remove the logo
+        // fade the background alpha
+        
+        if (needsReset) {
+            reset()
+            needsReset = false
+        }
+        
+        let moveDown = SKAction.moveTo(y: 0.0 - playButton.size.height, duration: 0.2)
+        let moveUp = SKAction.moveTo(y: frame.size.height + logo.size.height, duration: 0.2)
+        let remove = SKAction.removeFromParent()
+        let wait = SKAction.wait(forDuration: 0.2)
+        let fadeAlpha = SKAction.fadeAlpha(to: 1.0, duration: 0.2)
+        let moveLogo = SKAction.run { [unowned self] in
+            self.logo.run(SKAction.sequence([moveUp, remove, wait]))
+        }
+        let fadeBackground = SKAction.run{ [unowned self] in
+            self.background.run(fadeAlpha)
+            self.pauseButton.run(fadeAlpha)
+        }
+        let fadeSound = SKAction.run { [unowned self] in
+            self.soundButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
+        }
+        playButton.run(SKAction.sequence([moveDown, fadeSound, wait ]))
+        developerButton.run(SKAction.sequence([moveDown, wait, moveLogo, fadeBackground]))
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
+            // set the gameState to playing and release the bombs
+            if self.gameState == .paused { self.unpauseGame() }
+            
+            self.gameState = .playing
+            self.releaseBombs()
+            self.startBirds()
+        }
+
+    }
     
 }

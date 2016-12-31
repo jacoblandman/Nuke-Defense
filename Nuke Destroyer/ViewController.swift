@@ -40,8 +40,10 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
         }
         
         if showAC {
-            let ac = UIAlertController(title: "iOS Experience", message: "This view displays a list of the 39 projects completed during the 'Hacking With Swift' tutorial series. Various topics discussed within each project can be seen below the title. Selecting a cell will load a safari view where you can obtain more information about each project. Peek and pop if you dare. Also, upon visiting this table view, each project has been indexed so you can search in spotlight for topics such as 'CALayer', 'closures', etc.", preferredStyle: .alert)
+//            let ac = UIAlertController(title: "iOS Experience", message: "This view displays a list of the 39 projects completed during the 'Hacking With Swift' tutorial series. Various topics discussed within each project can be seen below the title. Selecting a cell will load a safari view where you can obtain more information about each project. Peek and pop if you dare. Also, upon visiting this table view, each project has been indexed so you can search in spotlight for topics such as 'CALayer', 'closures', etc.", preferredStyle: .alert)
             
+            let ac = UIAlertController(title: "iOS Experience", message: "This view displays a list of the 39 projects completed during the 'Hacking With Swift' tutorial series. Various topics discussed within each project can be seen below the title. Selecting a cell will load a safari view where you can obtain more information about each project. Peek and pop if you dare.", preferredStyle: .alert)
+
             ac.addAction(UIAlertAction(title: "Got It!", style: .default){ [unowned self] _ in
                 self.alertController = nil
             })
@@ -59,7 +61,7 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
         
         title = "Hacking With Swift Tutorial Series"
         
-        setupSearchableContent()
+        //setupSearchableContent()
         
         // register our view controller for peek and pop, if 3D is available on the device
         if traitCollection.forceTouchCapability == .available {

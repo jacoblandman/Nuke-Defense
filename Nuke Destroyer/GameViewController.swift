@@ -16,12 +16,20 @@ class GameViewController: UIViewController {
     // ------------------------------------------------------------------------------------------
     var currentGame: GameScene!
     var wentToJTL: Bool = false
+    var sceneLoaded: Bool = false
     
     // METHODS
     // ------------------------------------------------------------------------------------------
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loadScene()
+    }
+
+    // ------------------------------------------------------------------------------------------
+    
+    func loadScene() {
         
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(appMovedToBackground), name: Notification.Name.UIApplicationWillResignActive, object: nil)
@@ -30,10 +38,11 @@ class GameViewController: UIViewController {
             
             // create the game scene
             // Detect the screensize
-
+            
             let size = view.frame.size
             let scene = GameScene(size: size)
             scene.scaleMode = .resizeFill
+            sceneLoaded = true
             
             view.presentScene(scene)
             
@@ -46,7 +55,6 @@ class GameViewController: UIViewController {
             view.showsNodeCount = true
         }
     }
-
     // ------------------------------------------------------------------------------------------
     
     override var shouldAutorotate: Bool {
@@ -120,6 +128,16 @@ class GameViewController: UIViewController {
             currentGame.pauseGame()
         }
         
+        
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        /// the only time the view disappears is when it moves to JTL
+        currentGame.removeSound()
         
     }
     

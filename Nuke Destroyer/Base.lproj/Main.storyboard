@@ -28,6 +28,7 @@
                     <navigationItem key="navigationItem" id="UbY-a1-qLn"/>
                     <connections>
                         <segue destination="yuD-r5-TSz" kind="show" identifier="segueToJTL" id="UQO-rZ-Es7"/>
+                        <segue destination="yuD-r5-TSz" kind="show" identifier="segueToJTLNoAnimation" animates="NO" id="RWy-90-xOd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
@@ -105,7 +106,7 @@
         <scene sceneID="1DC-ZT-NHY">
             <objects>
                 <collectionViewController title="Resume" extendedLayoutIncludesOpaqueBars="YES" id="pgO-SZ-Rzo" customClass="ResumeCollectionViewController" customModule="Nuke_Destroyer" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="C3H-BY-twk">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="C3H-BY-twk">
                         <rect key="frame" x="0.0" y="0.0" width="736" height="414"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -361,6 +362,7 @@
                     <connections>
                         <segue destination="Lou-Hl-etR" kind="show" identifier="segueToIOS" id="8vV-NG-dgS"/>
                         <segue destination="WGZ-UI-3CD" kind="show" identifier="segueToTab" id="keK-Qj-HlS"/>
+                        <segue destination="Lou-Hl-etR" kind="show" identifier="segueToIOSNoAnimation" animates="NO" id="5WC-tC-YX0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kgq-wA-2Vg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -370,7 +372,7 @@
         <!--Navigation Controller-->
         <scene sceneID="24U-0W-afw">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ynx-Sq-JMD" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="InitialController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ynx-Sq-JMD" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="dVt-2I-sFp">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -409,4 +411,8 @@
         <image name="file-document-7.png" width="30" height="30"/>
         <image name="list-fat-7.png" width="30" height="30"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="RWy-90-xOd"/>
+        <segue reference="5WC-tC-YX0"/>
+    </inferredMetricsTieBreakers>
 </document>
