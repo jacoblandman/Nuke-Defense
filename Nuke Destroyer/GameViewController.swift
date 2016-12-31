@@ -15,6 +15,7 @@ class GameViewController: UIViewController {
     // PARAMETERS
     // ------------------------------------------------------------------------------------------
     var currentGame: GameScene!
+    var wentToJTL: Bool = false
     
     // METHODS
     // ------------------------------------------------------------------------------------------
@@ -74,6 +75,7 @@ class GameViewController: UIViewController {
     // ------------------------------------------------------------------------------------------
     
     func developerButtonTapped() {
+        wentToJTL = true
         performSegue(withIdentifier: "segueToJTL", sender: self)
     }
     
@@ -84,6 +86,12 @@ class GameViewController: UIViewController {
 
         navigationController?.isNavigationBarHidden = true
         navigationController?.hidesBarsOnSwipe = false
+        
+        if wentToJTL {
+            currentGame.checkForSound()
+        }
+        
+
     }
     
     // ------------------------------------------------------------------------------------------

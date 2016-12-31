@@ -52,6 +52,11 @@ class button: SKSpriteNode {
     var touched: Bool = false
 }
 
+class Bird: SKSpriteNode {
+    var birdType: String = ""
+    var direction: String = ""
+}
+
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -62,7 +67,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playButton: SKSpriteNode!
     var developerButton: SKSpriteNode!
     var pauseButton: SKSpriteNode!
+    var soundButton: SKSpriteNode!
     var gameScore: SKLabelNode!
+    var livesLabel: SKLabelNode!
     var background: SKSpriteNode!
     var score: Int = 0 {
         didSet {
@@ -78,6 +85,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             defaults.set(highScore, forKey: "highScore")
         }
     }
+    var lives: Int = 3 {
+        didSet {
+            livesLabel.text = "Bird Lives: \(lives)"
+        }
+    }
     
     var turret1: turret!
     var turret1Background: SKSpriteNode!
@@ -86,6 +98,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var bombs = [SKSpriteNode]()
     var trails = [SKNode]()
+    var birds = [Bird]()
     
     var floor: SKSpriteNode!
     
@@ -94,11 +107,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let floorReleaseTime: Double = 0.5
     var bulletNumber = RandomInt(min: 0, max: 2)
     var needsReset: Bool = true
+    var useSound: Bool = true
     
     var leftTouch: UITouch?
     var rightTouch: UITouch?
     var playButtonTouch: UITouch?
     var developerButtonTouch: UITouch?
+    
+    var backgroundSound: SKAudioNode?
     
     var gameState = GameState.showingLogo
     
@@ -110,6 +126,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -1.0)
         physicsWorld.speed = 0.6
         physicsWorld.contactDelegate = self
+        
+        // load the sound setting
+        // load UserDefaults if it exists there already
+        let defaults = UserDefaults.standard
+        if let useSoundForGame = defaults.object(forKey: "useSound") as? Bool {
+            useSound = useSoundForGame
+        } else {
+            useSound = true
+        }
+        
+        if useSound {
+            setBackgroundSound()
+        }
         
         // load the background, logos, scores, turrets, and start releasing bombs
         loadBackground()
@@ -139,6 +168,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         developerButtonTouch = touch
                         pressed(developerButton)
                     }
+                } else if soundButton.contains(touch.location(in: self)) {
+                    soundTapped()
                 }
             
             // if a touch happened while playing, set the left or right touch for controlling the turrets
@@ -293,6 +324,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameScore.name = "gameScore"
         addChild(gameScore)
         
+        // place the lives label
+        livesLabel = SKLabelNode(fontNamed: "Chalkduster")
+        livesLabel.text = "Bird Lives: 3"
+        livesLabel.horizontalAlignmentMode = .center
+        livesLabel.position = CGPoint(x: width * 0.5, y: height - (10 + scoreFontSize))
+        livesLabel.fontSize = scoreFontSize
+        livesLabel.name = "lives"
+        addChild(livesLabel)
+        
         // place the high score label
         // load the high score using user defaults
         highScoreLabel = SKLabelNode(fontNamed: "Chalkduster")
@@ -312,13 +352,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseButton.name = "pauseButton"
         addChild(pauseButton)
         
+        // also add the sound button
+        
+        if useSound {
+            soundButton = SKSpriteNode(imageNamed: "sound")
+        } else {
+            soundButton = SKSpriteNode(imageNamed: "noSound")
+        }
+        soundButton.position = CGPoint(x: width - 10 - pauseButton.size.width, y: height - (10 + scoreFontSize + pauseButton.size.height))
+        pauseButton.zPosition = 51
+        soundButton.name = "soundButton"
+        addChild(soundButton)
+        
+        
     }
     
     // ------------------------------------------------------------------------------------------
     
     func createTurrets() {
         scale = 0.75
-        let turretNumber = RandomInt(min: 1, max: 1)
+        let turretNumber = RandomInt(min: 1, max: 2)
         let imageName = "turret_".appending(String(turretNumber))
         let turretTexture = SKTexture(imageNamed: imageName)
         turret1Background = SKSpriteNode(texture: turretTexture)
@@ -343,7 +396,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for i in (0...19).reversed() {
             let rect = CGRect(x: CGFloat(i) / numFrames, y: 0, width: 1/numFrames, height: 1)
             frames.append(SKTexture(rect: rect, in: spriteSheet))
-            
         }
         
         //let gunTexture = SKTexture(imageNamed: imageName.appending("_0"))
@@ -413,9 +465,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bullet.anchorPoint = CGPoint(x: 0.5, y: 0.5)
             bullet.physicsBody = SKPhysicsBody(rectangleOf: bullet.size)
             //bullet.physicsBody = SKPhysicsBody(texture: bullet.texture!, size: bullet.size)
-            bullet.physicsBody?.isDynamic = false
+            bullet.physicsBody?.isDynamic = true
+            bullet.physicsBody?.affectedByGravity = false
             bullet.physicsBody!.categoryBitMask = CollisionTypes.bullet.rawValue
-            //bullet.physicsBody!.contactTestBitMask = CollisionTypes.bomb.rawValue
+            bullet.physicsBody!.contactTestBitMask = CollisionTypes.bomb.rawValue | CollisionTypes.bird.rawValue
+            bullet.physicsBody!.collisionBitMask = CollisionTypes.bird.rawValue | CollisionTypes.bomb.rawValue
             addChild(bullet)
             
             
@@ -425,11 +479,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let removeBullet = SKAction.removeFromParent()
             let sequence = SKAction.sequence([rotate, move, removeBullet])
             
+            if useSound {
+                run(SKAction.playSoundFileNamed("laser.mp3", waitForCompletion: false))
+            }
+            
             // make the bullet perform teh actions
             bullet.run(sequence)
             
             // wait to enable fire
-            let waitToEnableFire = SKAction.wait(forDuration: 0.15)
+            let waitToEnableFire = SKAction.wait(forDuration: 0.2)
             run(waitToEnableFire) { [unowned turret] in
                 turret.canFire = true
             }
@@ -579,41 +637,67 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let birdNumber = RandomInt(min: 1, max: 6)
             let birdName = BirdTypes(rawValue: birdNumber)?.description
             let birdTexture = SKTexture(imageNamed: (birdName?.appending("1"))!)
-            let bird = SKSpriteNode(texture: birdTexture)
+            
+            // create the bird object
+            let bird = Bird(texture: birdTexture)
             scale(bird, using: scale)
+            
+            // set its name
+            bird.birdType = birdName!
+            
+            // figure out its direction and flip it if necessary
             let randomInt = CGFloat(RandomInt(min: 0, max: 1))
             if randomInt == 0 {
                 bird.xScale = -1.0
+                bird.direction = "right"
+            } else {
+                bird.direction = "left"
             }
+            
+            // get a random position
             let xPos = randomInt * viewWidth + (2.0 * randomInt - 1.0) * (bird.size.width)
-            let yPos = RandomCGFloat(min: Float(0.6 * viewHeight), max: Float(0.9 * viewHeight))
+            let yPos = RandomCGFloat(min: Float(0.2 * viewHeight), max: Float(0.9 * viewHeight))
             bird.position = CGPoint(x: xPos, y: yPos)
+            addChild(bird)
+            
+            // set the physics body
             bird.physicsBody = SKPhysicsBody(rectangleOf: bird.size)
-            bird.physicsBody?.isDynamic = false
+            bird.physicsBody?.isDynamic = true
+            bird.physicsBody?.affectedByGravity = false
             bird.physicsBody!.categoryBitMask = CollisionTypes.bird.rawValue
             bird.physicsBody!.contactTestBitMask = CollisionTypes.bullet.rawValue
             bird.physicsBody!.collisionBitMask = CollisionTypes.bullet.rawValue
             bird.zPosition = 50
             bird.name = "bird"
-            addChild(bird)
             
+            // get all the bird frames to animate it flying
             var frames = [birdTexture]
-            
             var numFrames: Int = 9
             if BirdTypes(rawValue: birdNumber) == .sparrow { numFrames = 8 }
-            
             for i in 2...numFrames {
                 frames.append(SKTexture(imageNamed: (birdName?.appending(String(i)))! ))
             }
             
+            // add the bird to the birds array
+            birds.append(bird)
+            
+            // create the animations
             let fly = SKAction.animate(with: frames, timePerFrame: 0.1)
             let flyForever = SKAction.repeatForever(fly)
             let move = SKAction.moveBy(x: (1.0 - 2.0*randomInt) * (viewWidth + bird.size.width) , y: 0.0, duration: 5.0)
-            let remove = SKAction.removeFromParent()
-            
+            let remove = SKAction.run { [unowned self] in
+                if let index = self.birds.index(of: bird) {
+                    self.birds.remove(at: index)
+                }
+                bird.removeFromParent()
+            }
+            //let remove = SKAction.removeFromParent()
+    
+            // run the animations
             bird.run(flyForever)
             bird.run(SKAction.sequence([move, remove]))
         } else {
+            // if the gamestate is not playing then return
             return
         }
         
@@ -667,10 +751,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if contact.bodyA.node?.name == "floor" || contact.bodyB.node?.name == "floor" {
             if contact.bodyA.node?.name == "bomb" {
                 gameState = .gameOver
-                endGame(from: contact.bodyA.node!)
+                endGame(from: contact.bodyA.node)
             } else if contact.bodyB.node?.name == "bomb" {
                 gameState = .gameOver
-                endGame(from: contact.bodyB.node!)
+                endGame(from: contact.bodyB.node)
             }
         }
         
@@ -685,26 +769,56 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if contact.bodyA.node?.parent != nil {
                     collision(with: contact.bodyB.node!, by: contact.bodyA.node!)
                 }
+            } else if contact.bodyA.node?.name == "bird" {
+                if contact.bodyB.node?.parent != nil {
+                    
+                    kill(contact.bodyA.node as! Bird)
+                    contact.bodyB.node!.removeFromParent()
+                    lives = lives - 1
+                    if lives == 0 {
+                        gameState = .gameOver
+                        endGame(from: nil)
+                    }
+                }
+            } else if contact.bodyB.node?.name == "bird" {
+                if contact.bodyA.node?.parent != nil {
+                    
+                    kill(contact.bodyB.node as! Bird)
+                    contact.bodyA.node!.removeFromParent()
+                    lives = lives - 1
+                    if lives == 0 {
+                        gameState = .gameOver
+                        endGame(from: nil)
+                    }
+                }
             }
         }
     }
     
     // ------------------------------------------------------------------------------------------
     
-    func endGame(from bomb: SKNode) {
+    func endGame(from bomb: SKNode?) {
         
         leftTouch = nil
         rightTouch = nil
         
-        // make the bomb that hit the ground have a big explosion
-        var trail: SKNode?
-        if let bomb_index = bombs.index(of: bomb as! SKSpriteNode) {
-            bombs.remove(at: bomb_index)
-            trail = trails[bomb_index]
-            trails.remove(at: bomb_index)
+        // kill the rest of the birds
+        for bird in birds {
+            kill(bird)
         }
-        animateBigExplosion(from: bomb, trail: trail)
         
+        birds.removeAll()
+        
+        // make the bomb that hit the ground have a big explosion
+        if let exploding_bomb = bomb {
+            if let bomb_index = bombs.index(of: exploding_bomb as! SKSpriteNode) {
+                var trail: SKNode?
+                bombs.remove(at: bomb_index)
+                trail = trails[bomb_index]
+                trails.remove(at: bomb_index)
+                animateBigExplosion(from: exploding_bomb, trail: trail)
+            }
+        }
         
         // remove the rest of the bombs
         let spriteSheet = SKTexture(imageNamed: "Four")
@@ -739,6 +853,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             sprite.zPosition = 50
             sprite.name = "explosion"
             addChild(sprite)
+            
+            if useSound {
+                run(SKAction.playSoundFileNamed("QuickBomb.mp3", waitForCompletion: false))
+            }
+            
             sprite.run(sequence)
             remainingBomb.removeAllChildren()
             remainingBomb.run(remove)
@@ -794,6 +913,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.03)
         let sequence = SKAction.sequence([bomb_explosion, remove])
         
+        
+        if useSound {
+            run(SKAction.playSoundFileNamed("QuickBomb.mp3", waitForCompletion: false))
+        }
+        
         // run the actions
         bomb.removeAllChildren()
         bomb.run(remove)
@@ -837,7 +961,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.05)
         let sequence = SKAction.sequence([bomb_explosion, remove])
         
-        trail!.removeFromParent()
+        if let bombTrail = trail {
+            bombTrail.removeFromParent()
+        }
+        
+        if useSound {
+            run(SKAction.playSoundFileNamed("NuclearBomb.mp3", waitForCompletion: false))
+        }
+        
         bomb.removeAllChildren()
         bomb.run(remove)
         sprite.run(sequence)
@@ -880,7 +1011,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.background.run(fadeAlpha)
                 self.pauseButton.run(fadeAlpha)
             }
-            playButton.run(SKAction.sequence([moveDown, wait]))
+            let fadeSound = SKAction.run { [unowned self] in
+                self.soundButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
+            }
+            playButton.run(SKAction.sequence([moveDown, fadeSound, wait ]))
             developerButton.run(SKAction.sequence([moveDown, wait, moveLogo, fadeBackground]))
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
@@ -895,7 +1029,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if (name == "developerButton") {
             // change the view to the developer info stuff
             //self.isPaused = true
+            backgroundSound?.removeFromParent()
             viewController.developerButtonTapped()
+            
         }
         
     }
@@ -927,8 +1063,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.developerButton.run(moveUp)
                 self.playButton.run(moveUp)
             }
+            let fadeSound = SKAction.run { [unowned self] in
+                self.soundButton.run(SKAction.fadeAlpha(to: 1.0, duration: 0.2))
+            }
             
-            self.background.run(SKAction.sequence([fadeAlpha, wait, moveLogo, wait, moveButtons]))
+            self.background.run(SKAction.sequence([fadeAlpha, wait, moveLogo, fadeSound, wait, moveButtons]))
             
         }
     }
@@ -939,6 +1078,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         score = 0
         releaseTime = 2.0
         bulletNumber = RandomInt(min: 0, max: 2)
+        lives = 3
     }
     
     // ------------------------------------------------------------------------------------------
@@ -968,8 +1108,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let fadePause = SKAction.run { [unowned self] in
             self.pauseButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
         }
-        
-        self.background.run(SKAction.sequence([fadeAlpha, fadePause, wait, moveLogo, wait, moveButtons]))
+        let fadeSound = SKAction.run { [unowned self] in
+            self.soundButton.run(SKAction.fadeAlpha(to: 1.0, duration: 0.2))
+        }
+        self.background.run(SKAction.sequence([fadeAlpha, fadePause, wait, fadeSound, moveLogo, wait, moveButtons]))
     }
     
     // ------------------------------------------------------------------------------------------
@@ -998,9 +1140,106 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             node.isPaused = false
         }
     }
+
+    // ------------------------------------------------------------------------------------------
     
+    func soundTapped() {
+        
+        if useSound {
+            useSound = false
+            soundButton.texture = SKTexture(imageNamed: "noSound")
+            backgroundSound?.removeFromParent()
+        } else {
+            useSound = true
+            soundButton.texture = SKTexture(imageNamed: "sound")
+            addChild(backgroundSound!)
+        }
+        
+        let defaults = UserDefaults.standard
+        defaults.set(useSound, forKey: "useSound")
+        
+    }
     
     // ------------------------------------------------------------------------------------------
     
+    func kill(_ bird: Bird) {
+        
+        // stop the birds current actions
+        bird.removeAllActions()
+        
+        // remove the bird from the birds array
+        if let bird_index = birds.index(of: bird) {
+            birds.remove(at: bird_index)
+        }
+        
+        
+        //figure out the direction to animate the bird falling
+        var multiplier: CGFloat = 1.0
+        //let endX: CGFloat
+        if bird.direction == "right" {
+            multiplier = 1.0
+            //endX = bird.position.x + bird.position.y
+            
+        } else {
+            multiplier = -1.0
+            //endX = bird.position.x - bird.position.y
+        }
+        
+        //let path = UIBezierPath()
+        //path.move(to: CGPoint(x: 0, y: 0))
+        //path.addQuadCurve(to: convert(CGPoint(x: endX , y: 0), to: bird), controlPoint: convert(CGPoint(x: endX , y: bird.position.y), to: bird) )
+        
+        //print(path)
+        //let followArc = SKAction.follow(path.cgPath, duration: 2.0)
+        
+        // flip the bird upside down
+        bird.yScale = -1
+        
+        // change the texture to make it look dead
+        bird.texture = SKTexture(imageNamed: bird.birdType.appending("7.png"))
+        
+        // make it affected by gravity so that it falls to the ground
+        // change its collision stuff so nothing collides or contacts it
+        bird.physicsBody!.affectedByGravity = true
+        bird.physicsBody!.categoryBitMask = 0
+        bird.physicsBody!.contactTestBitMask = 0
+        bird.physicsBody!.collisionBitMask = 0
+
+        bird.physicsBody!.allowsRotation = false
+        
+        bird.physicsBody!.velocity = CGVector(dx: multiplier * 300.0, dy: -300.0)
+        
+        // create a wait action and remove action
+        let wait = SKAction.wait(forDuration: 3.0)
+        let remove = SKAction.removeFromParent()
+        
+        // run the actions
+        
+        if useSound {
+            run(SKAction.playSoundFileNamed("bird.mp3", waitForCompletion: false))
+        }
+        
+        bird.run(SKAction.sequence([wait, remove]))
+        
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func setBackgroundSound() {
+        if let musicURL = Bundle.main.url(forResource: "night", withExtension: "wav") {
+            backgroundSound = SKAudioNode(url: musicURL)
+            addChild(backgroundSound!)
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func checkForSound() {
+        if useSound {
+            addChild(backgroundSound!)
+        }
+    }
+    
+    // ------------------------------------------------------------------------------------------
     
 }
