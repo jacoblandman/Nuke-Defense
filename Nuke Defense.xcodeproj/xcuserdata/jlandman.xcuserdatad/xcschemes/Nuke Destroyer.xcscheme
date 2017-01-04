@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AE6548AA1E085E7C008784E8"
-               BuildableName = "Nuke Destroyer.app"
-               BlueprintName = "Nuke Destroyer"
-               ReferencedContainer = "container:Nuke Destroyer.xcodeproj">
+               BuildableName = "Nuke Defense.app"
+               BlueprintName = "Nuke Defense"
+               ReferencedContainer = "container:Nuke Defense.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AE6548C41E085E7C008784E8"
-               BuildableName = "Nuke DestroyerTests.xctest"
-               BlueprintName = "Nuke DestroyerTests"
-               ReferencedContainer = "container:Nuke Destroyer.xcodeproj">
+               BuildableName = "Nuke DefenseTests.xctest"
+               BlueprintName = "Nuke DefenseTests"
+               ReferencedContainer = "container:Nuke Defense.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AE6548CF1E085E7C008784E8"
-               BuildableName = "Nuke DestroyerUITests.xctest"
-               BlueprintName = "Nuke DestroyerUITests"
-               ReferencedContainer = "container:Nuke Destroyer.xcodeproj">
+               BuildableName = "Nuke DefenseUITests.xctest"
+               BlueprintName = "Nuke DefenseUITests"
+               ReferencedContainer = "container:Nuke Defense.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AE6548AA1E085E7C008784E8"
-            BuildableName = "Nuke Destroyer.app"
-            BlueprintName = "Nuke Destroyer"
-            ReferencedContainer = "container:Nuke Destroyer.xcodeproj">
+            BuildableName = "Nuke Defense.app"
+            BlueprintName = "Nuke Defense"
+            ReferencedContainer = "container:Nuke Defense.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AE6548AA1E085E7C008784E8"
-            BuildableName = "Nuke Destroyer.app"
-            BlueprintName = "Nuke Destroyer"
-            ReferencedContainer = "container:Nuke Destroyer.xcodeproj">
+            BuildableName = "Nuke Defense.app"
+            BlueprintName = "Nuke Defense"
+            ReferencedContainer = "container:Nuke Defense.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AE6548AA1E085E7C008784E8"
-            BuildableName = "Nuke Destroyer.app"
-            BlueprintName = "Nuke Destroyer"
-            ReferencedContainer = "container:Nuke Destroyer.xcodeproj">
+            BuildableName = "Nuke Defense.app"
+            BlueprintName = "Nuke Defense"
+            ReferencedContainer = "container:Nuke Defense.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

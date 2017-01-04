@@ -79,7 +79,6 @@
 		AE3B552C1E13242F0022F068 /* detailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B552B1E13242F0022F068 /* detailViewController.swift */; };
 		AE3B55771E1330600022F068 /* NavigationControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B55761E1330600022F068 /* NavigationControllerExtension.swift */; };
 		AE3B55791E14449D0022F068 /* tutorialCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */; };
-		AE3B557B1E145D430022F068 /* disclosureAccessory@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE3B557A1E145D430022F068 /* disclosureAccessory@3x.png */; };
 		AE3B557E1E14858E0022F068 /* BallTrail.sks in Resources */ = {isa = PBXBuildFile; fileRef = AE3B557C1E14858E0022F068 /* BallTrail.sks */; };
 		AE3B558B1E15AEDA0022F068 /* detailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B558A1E15AEDA0022F068 /* detailCollectionViewCell.swift */; };
 		AE50E2231E1D74710085037D /* Background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE50E1F61E1D74710085037D /* Background@2x.png */; };
@@ -290,7 +289,6 @@
 		AE3B552B1E13242F0022F068 /* detailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = detailViewController.swift; sourceTree = "<group>"; };
 		AE3B55761E1330600022F068 /* NavigationControllerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControllerExtension.swift; sourceTree = "<group>"; };
 		AE3B55781E14449D0022F068 /* tutorialCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tutorialCollectionViewCell.swift; sourceTree = "<group>"; };
-		AE3B557A1E145D430022F068 /* disclosureAccessory@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "disclosureAccessory@3x.png"; sourceTree = "<group>"; };
 		AE3B557C1E14858E0022F068 /* BallTrail.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BallTrail.sks; sourceTree = "<group>"; };
 		AE3B558A1E15AEDA0022F068 /* detailCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = detailCollectionViewCell.swift; sourceTree = "<group>"; };
 		AE50E1F61E1D74710085037D /* Background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Background@2x.png"; sourceTree = "<group>"; };
@@ -344,10 +342,10 @@
 		AE6548B91E085E7C008784E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AE6548BE1E085E7C008784E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AE6548C01E085E7C008784E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE6548C51E085E7C008784E8 /* Nuke DestroyerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Nuke DestroyerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE6548C51E085E7C008784E8 /* Nuke DefenseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Nuke DefenseTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE6548C91E085E7C008784E8 /* Nuke_DestroyerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nuke_DestroyerTests.swift; sourceTree = "<group>"; };
 		AE6548CB1E085E7C008784E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE6548D01E085E7C008784E8 /* Nuke DestroyerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Nuke DestroyerUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE6548D01E085E7C008784E8 /* Nuke DefenseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Nuke DefenseUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE6548D41E085E7D008784E8 /* Nuke_DestroyerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nuke_DestroyerUITests.swift; sourceTree = "<group>"; };
 		AE6548D61E085E7D008784E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE65498A1E09ED27008784E8 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
@@ -533,7 +531,6 @@
 		AE3B54F61E1323EB0022F068 /* Icons and PDFs */ = {
 			isa = PBXGroup;
 			children = (
-				AE3B557A1E145D430022F068 /* disclosureAccessory@3x.png */,
 				AE3B54FA1E1323F80022F068 /* Resume.pdf */,
 			);
 			name = "Icons and PDFs";
@@ -565,8 +562,8 @@
 			isa = PBXGroup;
 			children = (
 				AE6548AB1E085E7C008784E8 /* Nuke Destroyer.app */,
-				AE6548C51E085E7C008784E8 /* Nuke DestroyerTests.xctest */,
-				AE6548D01E085E7C008784E8 /* Nuke DestroyerUITests.xctest */,
+				AE6548C51E085E7C008784E8 /* Nuke DefenseTests.xctest */,
+				AE6548D01E085E7C008784E8 /* Nuke DefenseUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -736,9 +733,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AE6548AA1E085E7C008784E8 /* Nuke Destroyer */ = {
+		AE6548AA1E085E7C008784E8 /* Nuke Defense */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AE6548D91E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke Destroyer" */;
+			buildConfigurationList = AE6548D91E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke Defense" */;
 			buildPhases = (
 				AE6548A71E085E7C008784E8 /* Sources */,
 				AE6548A81E085E7C008784E8 /* Frameworks */,
@@ -748,14 +745,14 @@
 			);
 			dependencies = (
 			);
-			name = "Nuke Destroyer";
+			name = "Nuke Defense";
 			productName = "Nuke Destroyer";
 			productReference = AE6548AB1E085E7C008784E8 /* Nuke Destroyer.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AE6548C41E085E7C008784E8 /* Nuke DestroyerTests */ = {
+		AE6548C41E085E7C008784E8 /* Nuke DefenseTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AE6548DC1E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke DestroyerTests" */;
+			buildConfigurationList = AE6548DC1E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke DefenseTests" */;
 			buildPhases = (
 				AE6548C11E085E7C008784E8 /* Sources */,
 				AE6548C21E085E7C008784E8 /* Frameworks */,
@@ -766,14 +763,14 @@
 			dependencies = (
 				AE6548C71E085E7C008784E8 /* PBXTargetDependency */,
 			);
-			name = "Nuke DestroyerTests";
+			name = "Nuke DefenseTests";
 			productName = "Nuke DestroyerTests";
-			productReference = AE6548C51E085E7C008784E8 /* Nuke DestroyerTests.xctest */;
+			productReference = AE6548C51E085E7C008784E8 /* Nuke DefenseTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		AE6548CF1E085E7C008784E8 /* Nuke DestroyerUITests */ = {
+		AE6548CF1E085E7C008784E8 /* Nuke DefenseUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AE6548DF1E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke DestroyerUITests" */;
+			buildConfigurationList = AE6548DF1E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke DefenseUITests" */;
 			buildPhases = (
 				AE6548CC1E085E7C008784E8 /* Sources */,
 				AE6548CD1E085E7C008784E8 /* Frameworks */,
@@ -784,9 +781,9 @@
 			dependencies = (
 				AE6548D21E085E7D008784E8 /* PBXTargetDependency */,
 			);
-			name = "Nuke DestroyerUITests";
+			name = "Nuke DefenseUITests";
 			productName = "Nuke DestroyerUITests";
-			productReference = AE6548D01E085E7C008784E8 /* Nuke DestroyerUITests.xctest */;
+			productReference = AE6548D01E085E7C008784E8 /* Nuke DefenseUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -801,7 +798,7 @@
 				TargetAttributes = {
 					AE6548AA1E085E7C008784E8 = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = MBLBPAM74V;
+						DevelopmentTeam = E294R2UKFW;
 						ProvisioningStyle = Automatic;
 					};
 					AE6548C41E085E7C008784E8 = {
@@ -818,7 +815,7 @@
 					};
 				};
 			};
-			buildConfigurationList = AE6548A61E085E7C008784E8 /* Build configuration list for PBXProject "Nuke Destroyer" */;
+			buildConfigurationList = AE6548A61E085E7C008784E8 /* Build configuration list for PBXProject "Nuke Defense" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -831,9 +828,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AE6548AA1E085E7C008784E8 /* Nuke Destroyer */,
-				AE6548C41E085E7C008784E8 /* Nuke DestroyerTests */,
-				AE6548CF1E085E7C008784E8 /* Nuke DestroyerUITests */,
+				AE6548AA1E085E7C008784E8 /* Nuke Defense */,
+				AE6548C41E085E7C008784E8 /* Nuke DefenseTests */,
+				AE6548CF1E085E7C008784E8 /* Nuke DefenseUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -857,7 +854,6 @@
 				AE19B0191E1D8B7400FB726D /* vulture9.png in Resources */,
 				AE19AFEE1E1D8B7400FB726D /* duck5.png in Resources */,
 				AEB03E511E1D721F009BF568 /* languagesC++.jpg in Resources */,
-				AE3B557B1E145D430022F068 /* disclosureAccessory@3x.png in Resources */,
 				AEB03E701E1D721F009BF568 /* Languages.txt in Resources */,
 				AE50E2461E1D74710085037D /* Star@2x.png in Resources */,
 				AE50E24E1E1D74710085037D /* turret_2@2x.png in Resources */,
@@ -1080,12 +1076,12 @@
 /* Begin PBXTargetDependency section */
 		AE6548C71E085E7C008784E8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AE6548AA1E085E7C008784E8 /* Nuke Destroyer */;
+			target = AE6548AA1E085E7C008784E8 /* Nuke Defense */;
 			targetProxy = AE6548C61E085E7C008784E8 /* PBXContainerItemProxy */;
 		};
 		AE6548D21E085E7D008784E8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AE6548AA1E085E7C008784E8 /* Nuke Destroyer */;
+			target = AE6548AA1E085E7C008784E8 /* Nuke Defense */;
 			targetProxy = AE6548D11E085E7D008784E8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1150,7 +1146,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1193,7 +1189,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -1205,11 +1201,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = MBLBPAM74V;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = E294R2UKFW;
 				INFOPLIST_FILE = "Nuke Destroyer/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.SSB.Nuke-Defense";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobtaylorlandman.SSB.NukeDefense;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -1219,11 +1217,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = MBLBPAM74V;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = E294R2UKFW;
 				INFOPLIST_FILE = "Nuke Destroyer/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.SSB.Nuke-Defense";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobtaylorlandman.SSB.NukeDefense;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -1240,7 +1240,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.SSB.Nuke-DestroyerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nuke Destroyer.app/Nuke Destroyer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nuke Defense.app/Nuke Defense";
 			};
 			name = Debug;
 		};
@@ -1255,7 +1255,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.SSB.Nuke-DestroyerTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nuke Destroyer.app/Nuke Destroyer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nuke Defense.app/Nuke Defense";
 			};
 			name = Release;
 		};
@@ -1290,7 +1290,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AE6548A61E085E7C008784E8 /* Build configuration list for PBXProject "Nuke Destroyer" */ = {
+		AE6548A61E085E7C008784E8 /* Build configuration list for PBXProject "Nuke Defense" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AE6548D71E085E7D008784E8 /* Debug */,
@@ -1299,7 +1299,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AE6548D91E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke Destroyer" */ = {
+		AE6548D91E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke Defense" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AE6548DA1E085E7D008784E8 /* Debug */,
@@ -1308,7 +1308,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AE6548DC1E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke DestroyerTests" */ = {
+		AE6548DC1E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke DefenseTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AE6548DD1E085E7D008784E8 /* Debug */,
@@ -1317,7 +1317,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AE6548DF1E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke DestroyerUITests" */ = {
+		AE6548DF1E085E7D008784E8 /* Build configuration list for PBXNativeTarget "Nuke DefenseUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AE6548E01E085E7D008784E8 /* Debug */,
