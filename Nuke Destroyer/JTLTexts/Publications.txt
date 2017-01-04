@@ -1,3 +1,0 @@
-"Depleted Uranium Soaring Temperature Reactor (DUSTR)"
-"A Volume-Dependent Fleck Factor for Added Robustness in Implicit Monte Carlo Calculations"
-"Analysis of Lagged Weight Windows for Implicit Monte Carlo Variance Reduction"
