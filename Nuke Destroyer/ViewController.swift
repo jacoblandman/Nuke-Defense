@@ -216,7 +216,7 @@ class ViewController: UICollectionViewController, UIViewControllerPreviewingDele
         projects.append(["Project 37: Psychic Tester", "CAEmitterLayer, CAGradientLayer, @IBDesignable, @IBInspectable, 3D card flip effect, 3D Touch, WCSession, watchOS app"])
         projects.append(["Project 38: GitHub Commits", "Core Data, NSFetchRequest, NSManagedObject, NSPredicate, NSSortDescriptor, NSFetchedResultsController"])
         projects.append(["Project 39: Unit testing with XCTest", "filter(), measure(), functions as parameters, user interface testing with XCTest"])
-        projects.append(["Hacking With Swift", ""])
+        projects.append(["Hacking With Swift", "Learn Swift for free"])
     }
     
     // ------------------------------------------------------------------------------------------

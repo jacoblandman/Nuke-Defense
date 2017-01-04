@@ -533,7 +533,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         logo.name = "logo"
         addChild(logo)
         
-        print("scale mode is \(UIScreen.main.scale)")
         let spacing: CGFloat = 5 * UIScreen.main.scale
         playButton = SKSpriteNode(imageNamed: "PlayButton")
         scale(playButton, using: scale)
@@ -739,7 +738,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background = SKSpriteNode(imageNamed: "Background")
         let backgroundSize = background.size
         scale = max(width / backgroundSize.width, height / backgroundSize.height)
-        print("scale is \(scale)")
         background.size = CGSize(width: backgroundSize.width * scale, height: backgroundSize.height * scale)
         background.position = CGPoint(x: width / 2.0 , y: height / 2.0)
         background.zPosition = -1
