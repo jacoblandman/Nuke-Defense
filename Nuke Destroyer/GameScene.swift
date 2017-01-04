@@ -63,6 +63,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // PARAMETERS
     // ------------------------------------------------------------------------------------------
     weak var viewController: GameViewController!
+    let worldNode = SKNode()
     var logo: SKSpriteNode!
     var playButton: SKSpriteNode!
     var developerButton: SKSpriteNode!
@@ -108,6 +109,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var bulletNumber = RandomInt(min: 0, max: 2)
     var needsReset: Bool = true
     var useSound: Bool = true
+    var bombsNotReleased: Bool = true
+    var birdsNotReleased: Bool = true
+    var runningActions: Bool = false
     
     var leftTouch: UITouch?
     var rightTouch: UITouch?
@@ -121,6 +125,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // METHODS
     // ------------------------------------------------------------------------------------------
     override func didMove(to view: SKView) {
+        
+        // add the world node which will be used for pausing
+        worldNode.name = "world"
+        addChild(worldNode)
         
         // set the gravity and speed for the game
         physicsWorld.gravity = CGVector(dx: 0.0, dy: -1.0)
@@ -136,13 +144,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             useSound = true
         }
         
-        if useSound {
-            setBackgroundSound()
-        }
-        
         // load the background, logos, scores, turrets, and start releasing bombs
         loadBackground()
-        createLogo()
+        createLogosAndButtons()
         loadScores()
         createTurrets()
         createFloor()
@@ -177,8 +181,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 guard let touch = touches.first else { return }
                 
                 if pauseButton.contains(touch.location(in: self)) {
-                    pauseGame()
-                    //self.isPaused = true
+                    pauseGame(appMovedToBackground: false)
                     return
                 }
                 
@@ -280,6 +283,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // ------------------------------------------------------------------------------------------
     
     override func update(_ currentTime: TimeInterval) {
+        
+        // check if the game is paused
+        if gameState == .paused {
+            worldNode.isPaused = true
+            physicsWorld.speed = 0.0
+            return
+        }
         
         
         if let touch = leftTouch {
@@ -470,7 +480,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bullet.physicsBody!.categoryBitMask = CollisionTypes.bullet.rawValue
             bullet.physicsBody!.contactTestBitMask = CollisionTypes.bomb.rawValue | CollisionTypes.bird.rawValue
             bullet.physicsBody!.collisionBitMask = CollisionTypes.bird.rawValue | CollisionTypes.bomb.rawValue
-            addChild(bullet)
+            worldNode.addChild(bullet)
             
             
             // actions the bullet will make
@@ -480,7 +490,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let sequence = SKAction.sequence([rotate, move, removeBullet])
             
             if useSound {
-                run(SKAction.playSoundFileNamed("laser.mp3", waitForCompletion: false))
+                playQuickSoundWithName("laser.mp3")
             }
             
             // make the bullet perform teh actions
@@ -513,10 +523,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // ------------------------------------------------------------------------------------------
     
-    func createLogo() {
+    func createLogosAndButtons() {
         logo = SKSpriteNode(imageNamed: "Logo")
         logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
         logo.position = CGPoint(x: frame.midX, y: frame.midY + frame.height / 6)
+        logo.name = "logo"
         addChild(logo)
         
         let spacing: CGFloat = 15
@@ -554,14 +565,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             bomb.zPosition = 50
             bomb.name = "bomb"
-            addChild(bomb)
+            worldNode.addChild(bomb)
             bombs.append(bomb)
             
             // add a trail to the bomb, which is the target node
             let trailNode = SKNode()
             trailNode.zPosition = 1
             trailNode.name = "trailNode"
-            addChild(trailNode)
+            worldNode.addChild(trailNode)
             trails.append(trailNode)
             
             // add the emitter
@@ -579,12 +590,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // ------------------------------------------------------------------------------------------
     
     func releaseBombs() {
+    
         // if the gameState isn't playing then repeat this function call after a delay
         if gameState == .playing {
             
             if (releaseTime > floorReleaseTime) { releaseTime *= 0.91 }
-            
-            createBomb()
             
             let maxReleaseTime = releaseTime * 2.0
             let minReleaseTime = releaseTime * 0.5
@@ -594,9 +604,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //print(nextReleaseTime)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + nextReleaseTime) { [unowned self] in
+                self.createBomb()
                 self.releaseBombs()
             }
         } else {
+            bombsNotReleased = true
             return
         }
     }
@@ -612,7 +624,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let releaseTime = 1.0
             
             let minReleaseTime = 0.5 * releaseTime
-            let maxReleaseTime = 8.0 * releaseTime
+            let maxReleaseTime = 7.0 * releaseTime
             
             let nextReleaseTime = RandomDouble(min: minReleaseTime, max: maxReleaseTime)
             
@@ -621,6 +633,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.startBirds()
             }
         } else {
+            birdsNotReleased = true
             return
         }
     }
@@ -658,7 +671,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let xPos = randomInt * viewWidth + (2.0 * randomInt - 1.0) * (bird.size.width)
             let yPos = RandomCGFloat(min: Float(0.2 * viewHeight), max: Float(0.9 * viewHeight))
             bird.position = CGPoint(x: xPos, y: yPos)
-            addChild(bird)
+            worldNode.addChild(bird)
             
             // set the physics body
             bird.physicsBody = SKPhysicsBody(rectangleOf: bird.size)
@@ -802,6 +815,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         leftTouch = nil
         rightTouch = nil
         
+        // remove the background sound
+        removeSound()
+        
         // kill the rest of the birds
         for bird in birds {
             kill(bird)
@@ -852,10 +868,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             sprite.position = remainingBomb.position
             sprite.zPosition = 50
             sprite.name = "explosion"
-            addChild(sprite)
+            worldNode.addChild(sprite)
             
             if useSound {
-                run(SKAction.playSoundFileNamed("QuickBomb.mp3", waitForCompletion: false))
+                playQuickSoundWithName("QuickBomb.mp3")
             }
             
             sprite.run(sequence)
@@ -866,7 +882,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         trails.removeAll()
         bombs.removeAll()
         
-        showGameOverLogos()
+        showGameOverLogos(actionDuration: 0.2)
         needsReset = true
     }
     
@@ -907,15 +923,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sprite.position = bomb.position
         sprite.zPosition = 50
         sprite.name = "explosion"
-        addChild(sprite)
+        worldNode.addChild(sprite)
         
         // animate the explision and remove the node afterwards
         let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.03)
         let sequence = SKAction.sequence([bomb_explosion, remove])
         
-        
+        // use the SKAudio node for quick sounds becuase the skaction is buggy and has a memory leak
         if useSound {
-            run(SKAction.playSoundFileNamed("QuickBomb.mp3", waitForCompletion: false))
+            playQuickSoundWithName("QuickBomb.mp3")
         }
         
         // run the actions
@@ -955,7 +971,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sprite.position = CGPoint(x: frame.midX, y: sprite.size.height / 2 - whiteSpace)
         sprite.zPosition = 50
         sprite.name = "explosion"
-        addChild(sprite)
+        worldNode.addChild(sprite)
 
         // animate the explision and remove the node afterwards
         let bomb_explosion = SKAction.animate(with: frames, timePerFrame: 0.05)
@@ -966,7 +982,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if useSound {
-            run(SKAction.playSoundFileNamed("NuclearBomb.mp3", waitForCompletion: false))
+            playQuickSoundWithName("NuclearBomb.mp3")
         }
         
         bomb.removeAllChildren()
@@ -996,29 +1012,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             viewController.developerButtonTapped()
             
         }
-        
     }
     
     // ------------------------------------------------------------------------------------------
     
-    func showGameOverLogos() {
+    func showGameOverLogos(actionDuration: Double) {
         
+        self.runningActions = true
         pauseButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + (5.0 * actionDuration)) { [unowned self] in
             self.playButton.texture = SKTexture(imageNamed: "PlayAgainButton")
-            self.logo = SKSpriteNode(imageNamed: "GameOverLogo")
-            self.logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
-            self.logo.position = CGPoint(x: self.frame.midX, y: self.frame.size.height + self.logo.size.height)
-            self.logo.zPosition = 51
-            self.addChild(self.logo)
+            
+            if self.logo.parent == nil {
+                self.logo = SKSpriteNode(imageNamed: "GameOverLogo")
+                self.logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+                self.logo.position = CGPoint(x: self.frame.midX, y: self.frame.size.height + self.logo.size.height)
+                self.logo.zPosition = 51
+                self.addChild(self.logo)
+            }
+            self.logo.name = "logo-end"
             
             let logoPosition = self.frame.midY + self.frame.height / 6
             let spacing: CGFloat = 15
-            let moveDown = SKAction.moveTo(y: logoPosition, duration: 0.2)
-            let moveUp = SKAction.moveTo(y: logoPosition - (spacing + self.playButton.size.height * 0.5), duration: 0.2)
-            let fadeAlpha = SKAction.fadeAlpha(to: 0.5, duration: 0.2)
-            let wait = SKAction.wait(forDuration: 0.2)
+            let moveDown = SKAction.moveTo(y: logoPosition, duration: actionDuration)
+            let moveUp = SKAction.moveTo(y: logoPosition - (spacing + self.playButton.size.height * 0.5), duration: actionDuration)
+            let fadeAlpha = SKAction.fadeAlpha(to: 0.5, duration: actionDuration)
+            let wait = SKAction.wait(forDuration: actionDuration)
             let moveLogo = SKAction.run { [unowned self] in
                 self.logo.run(moveDown)
             }
@@ -1027,11 +1047,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.playButton.run(moveUp)
             }
             let fadeSound = SKAction.run { [unowned self] in
-                self.soundButton.run(SKAction.fadeAlpha(to: 1.0, duration: 0.2))
+                self.soundButton.run(SKAction.fadeAlpha(to: 1.0, duration: actionDuration))
             }
-            
-            self.background.run(SKAction.sequence([fadeAlpha, wait, moveLogo, fadeSound, wait, moveButtons]))
-            
+            let setActionsBool = SKAction.run { [unowned self] in
+                self.runningActions = false
+            }
+            self.background.run(SKAction.sequence([fadeAlpha, wait, moveLogo, fadeSound, wait, moveButtons, wait, setActionsBool]))
         }
     }
     
@@ -1042,25 +1063,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         releaseTime = 2.0
         bulletNumber = RandomInt(min: 0, max: 2)
         lives = 3
+        bombsNotReleased = true
+        birdsNotReleased = true
     }
     
     // ------------------------------------------------------------------------------------------
     
-    func presentPauseMenu() {
+    func presentPauseMenu(actionDuration: Double) {
         
+        self.runningActions = true
         playButton.texture = SKTexture(imageNamed: "PlayButton")
-        logo = SKSpriteNode(imageNamed: "PausedLogo")
-        logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
-        logo.position = CGPoint(x: frame.midX, y: frame.size.height + logo.size.height)
-        logo.zPosition = 51
-        addChild(logo)
+        
+        // only add the logo again if it isn't already there
+        if logo.parent == nil {
+            logo = SKSpriteNode(imageNamed: "PausedLogo")
+            logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
+            logo.position = CGPoint(x: frame.midX, y: frame.size.height + logo.size.height)
+            logo.zPosition = 51
+            logo.name = "logo-paused"
+            addChild(logo)
+        }
         
         let logoPosition = self.frame.midY + self.frame.height / 6
         let spacing: CGFloat = 15
-        let moveDown = SKAction.moveTo(y: logoPosition, duration: 0.2)
-        let moveUp = SKAction.moveTo(y: logoPosition - (spacing + self.playButton.size.height * 0.5), duration: 0.2)
-        let fadeAlpha = SKAction.fadeAlpha(to: 0.5, duration: 0.2)
-        let wait = SKAction.wait(forDuration: 0.2)
+        let moveDown = SKAction.moveTo(y: logoPosition, duration: actionDuration)
+        let moveUp = SKAction.moveTo(y: logoPosition - (spacing + self.playButton.size.height * 0.5), duration: actionDuration)
+        let fadeAlpha = SKAction.fadeAlpha(to: 0.5, duration: actionDuration)
+        let wait = SKAction.wait(forDuration: actionDuration)
         let moveLogo = SKAction.run { [unowned self] in
             self.logo.run(moveDown)
         }
@@ -1069,39 +1098,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.playButton.run(moveUp)
         }
         let fadePause = SKAction.run { [unowned self] in
-            self.pauseButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
+            self.pauseButton.run(SKAction.fadeAlpha(to: 0.0, duration: actionDuration))
         }
         let fadeSound = SKAction.run { [unowned self] in
-            self.soundButton.run(SKAction.fadeAlpha(to: 1.0, duration: 0.2))
+            self.soundButton.run(SKAction.fadeAlpha(to: 1.0, duration: actionDuration))
         }
-        self.background.run(SKAction.sequence([fadeAlpha, fadePause, wait, fadeSound, moveLogo, wait, moveButtons]))
+        let setActionsBool = SKAction.run { [unowned self] in
+            self.runningActions = false
+        }
+        self.background.run(SKAction.sequence([fadeAlpha, fadePause, wait, moveLogo, fadeSound, wait, moveButtons, wait, setActionsBool]))
+        
     }
     
     // ------------------------------------------------------------------------------------------
     
-    func pauseGame() {
+    func pauseGame(appMovedToBackground: Bool) {
         gameState = .paused
-        self.physicsWorld.speed = 0.0
+        //bombsNotReleased = true
+        //birdsNotReleased = true
+        removeSound()
+        physicsWorld.speed = 0.0
         leftTouch = nil
         rightTouch = nil
         
-        for node in self.children {
-            if (node.name == "bullet" || node.name == "bomb" || node.name == "trail" || node.name == "trailNode" || node.name == "explosion" || node.name == "bird") {
-               node.isPaused = true
-            }
-        }
+        worldNode.isPaused = true
         
-        presentPauseMenu()
+        if (appMovedToBackground) {
+            presentPauseMenu(actionDuration: 0.0)
+        } else {
+            presentPauseMenu(actionDuration: 0.0)
+        }
     }
     
     // ------------------------------------------------------------------------------------------
     
     func unpauseGame() {
-        
-        self.physicsWorld.speed = 0.6
-        for node in self.children {
-            node.isPaused = false
-        }
+        physicsWorld.speed = 0.6
+        worldNode.isPaused = false
     }
 
     // ------------------------------------------------------------------------------------------
@@ -1115,7 +1148,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             useSound = true
             soundButton.texture = SKTexture(imageNamed: "sound")
-            setBackgroundSound()
         }
         
         let defaults = UserDefaults.standard
@@ -1134,7 +1166,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let bird_index = birds.index(of: bird) {
             birds.remove(at: bird_index)
         }
-        
         
         //figure out the direction to animate the bird falling
         var multiplier: CGFloat = 1.0
@@ -1163,7 +1194,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // make it affected by gravity so that it falls to the ground
         // change its collision stuff so nothing collides or contacts it
-        bird.physicsBody!.affectedByGravity = true
         bird.physicsBody!.categoryBitMask = 0
         bird.physicsBody!.contactTestBitMask = 0
         bird.physicsBody!.collisionBitMask = 0
@@ -1179,7 +1209,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // run the actions
         
         if useSound {
-            run(SKAction.playSoundFileNamed("bird.mp3", waitForCompletion: false))
+            playQuickSoundWithName("bird.mp3")
         }
         
         bird.run(SKAction.sequence([wait, remove]))
@@ -1191,6 +1221,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func setBackgroundSound() {
         if let musicURL = Bundle.main.url(forResource: "night", withExtension: "wav") {
             backgroundSound = SKAudioNode(url: musicURL)
+            backgroundSound!.name = "background Sound"
             addChild(backgroundSound!)
         }
     }
@@ -1217,6 +1248,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // ------------------------------------------------------------------------------------------
     
+    func quickPlay() {
+        
+        // check to make sure actions aren't already happening. If so, we need to stop them
+        beginPlay()
+        return
+    }
+    
+    // ------------------------------------------------------------------------------------------
+    
     func beginPlay() {
         // create the actions to start the game
         // move the buttons down
@@ -1229,6 +1269,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             needsReset = false
         }
         
+        checkForSound()
+        
         let moveDown = SKAction.moveTo(y: 0.0 - playButton.size.height, duration: 0.2)
         let moveUp = SKAction.moveTo(y: frame.size.height + logo.size.height, duration: 0.2)
         let remove = SKAction.removeFromParent()
@@ -1239,23 +1281,57 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         let fadeBackground = SKAction.run{ [unowned self] in
             self.background.run(fadeAlpha)
-            self.pauseButton.run(fadeAlpha)
+            //self.pauseButton.run(fadeAlpha)
         }
         let fadeSound = SKAction.run { [unowned self] in
-            self.soundButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
+            //self.soundButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
         }
-        playButton.run(SKAction.sequence([moveDown, fadeSound, wait ]))
+        
+        self.run(fadeSound)
+        playButton.run(moveDown)
         developerButton.run(SKAction.sequence([moveDown, wait, moveLogo, fadeBackground]))
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [unowned self] in
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [unowned self] in
             // set the gameState to playing and release the bombs
-            if self.gameState == .paused { self.unpauseGame() }
-            
+            if self.worldNode.isPaused { self.unpauseGame() }
             self.gameState = .playing
-            self.releaseBombs()
-            self.startBirds()
+            
+            // if the game was paused, the bombs and birds may still be released,
+            // so we have to check if the method has returned yet
+            // if they did return, they will set the bombsNotRelease or birdsNotReleased to false
+            // release the bombs if they haven't been released yet
+            if self.bombsNotReleased {
+                //print("releasingBombs")
+                self.bombsNotReleased = false
+                self.releaseBombs()
+            }
+            
+            // release the birds if they havent yet
+            if self.birdsNotReleased {
+                self.birdsNotReleased = false
+                self.startBirds()
+            }
+            
+            self.soundButton.alpha = 0.0
+            self.pauseButton.alpha = 1.0
+            
         }
 
     }
+    
+    // ------------------------------------------------------------------------------------------
+    
+    func playQuickSoundWithName(_ fileName: String) {
+        let audioNode = SKAudioNode(fileNamed: fileName)
+        audioNode.autoplayLooped = false
+        self.addChild(audioNode)
+        let playAction = SKAction.play()
+        let wait = SKAction.wait(forDuration: 2.0)
+        let remove = SKAction.removeFromParent()
+        audioNode.run(SKAction.sequence([playAction, wait, remove]))
+    }
+    
+    // ------------------------------------------------------------------------------------------
     
 }

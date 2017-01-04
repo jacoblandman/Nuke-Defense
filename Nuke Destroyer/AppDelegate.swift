@@ -170,6 +170,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let shortcutType = shortcutItem.type
         guard let shortcutIdentifier = ShortcutIdentifier(fullIdentifier: shortcutType) else { return false }
 
+        if (UIApplication.shared.statusBarOrientation != .landscapeLeft && UIApplication.shared.statusBarOrientation != .landscapeRight) {
+            let value = UIDeviceOrientation.landscapeRight.rawValue
+            UIDevice.current.setValue(value, forKey: "orientation")
+        }
+        
         if let nc = window?.rootViewController as? UINavigationController {
             nc.popToRootViewController(animated: true)
             if let vc = nc.topViewController as? GameViewController {
@@ -179,8 +184,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     if !(vc.sceneLoaded) {
                         vc.loadScene()
                     }
-                    vc.currentGame.beginPlay()
-                    handled = true
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                        vc.currentGame.quickPlay()
+                        handled = true
+                    }
+                    
                     break
                     
                 case .DeveloperInfo:

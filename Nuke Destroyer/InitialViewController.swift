@@ -222,15 +222,7 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
     
     func setConstraintsForView(with size: CGSize) {
         
-        
-        for constraint  in view.constraints {
-            print(constraint)
-        }
         view.removeConstraints(view.constraints)
-        print("removing")
-        for constraint  in view.constraints {
-            print(constraint)
-        }
         
         let viewWidth = size.width
         let viewHeight = size.height

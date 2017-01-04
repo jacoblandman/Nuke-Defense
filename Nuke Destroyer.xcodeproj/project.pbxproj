@@ -40,9 +40,6 @@
 		AE3B55211E1324090022F068 /* PersonalInfo.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55101E1324090022F068 /* PersonalInfo.txt */; };
 		AE3B55221E1324090022F068 /* TechnicalExperienceDates.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55111E1324090022F068 /* TechnicalExperienceDates.txt */; };
 		AE3B55231E1324090022F068 /* Education.txt in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55121E1324090022F068 /* Education.txt */; };
-		AE3B55281E1324230022F068 /* Swoosh.wav in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55251E1324230022F068 /* Swoosh.wav */; };
-		AE3B55291E1324230022F068 /* Swoosh.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55261E1324230022F068 /* Swoosh.mp3 */; };
-		AE3B552A1E1324230022F068 /* Swish.caf in Resources */ = {isa = PBXBuildFile; fileRef = AE3B55271E1324230022F068 /* Swish.caf */; };
 		AE3B552C1E13242F0022F068 /* detailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3B552B1E13242F0022F068 /* detailViewController.swift */; };
 		AE3B55331E1324AC0022F068 /* Awards.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B552E1E1324AC0022F068 /* Awards.jpg */; };
 		AE3B55341E1324AC0022F068 /* awards0.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AE3B552F1E1324AC0022F068 /* awards0.jpg */; };
@@ -229,9 +226,6 @@
 		AE3B55101E1324090022F068 /* PersonalInfo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PersonalInfo.txt; sourceTree = "<group>"; };
 		AE3B55111E1324090022F068 /* TechnicalExperienceDates.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TechnicalExperienceDates.txt; sourceTree = "<group>"; };
 		AE3B55121E1324090022F068 /* Education.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Education.txt; sourceTree = "<group>"; };
-		AE3B55251E1324230022F068 /* Swoosh.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Swoosh.wav; sourceTree = "<group>"; };
-		AE3B55261E1324230022F068 /* Swoosh.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Swoosh.mp3; sourceTree = "<group>"; };
-		AE3B55271E1324230022F068 /* Swish.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Swish.caf; sourceTree = "<group>"; };
 		AE3B552B1E13242F0022F068 /* detailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = detailViewController.swift; sourceTree = "<group>"; };
 		AE3B552E1E1324AC0022F068 /* Awards.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Awards.jpg; sourceTree = "<group>"; };
 		AE3B552F1E1324AC0022F068 /* awards0.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = awards0.jpg; sourceTree = "<group>"; };
@@ -402,7 +396,6 @@
 			isa = PBXGroup;
 			children = (
 				AE3B552D1E13245E0022F068 /* Images */,
-				AE3B55241E1324180022F068 /* Sounds */,
 				AE3B55011E1323FB0022F068 /* TextFiles */,
 				AE3B54F61E1323EB0022F068 /* Icons and PDFs */,
 				AE3B54E61E1323BE0022F068 /* ResumeSectionCollectionViewCell.swift */,
@@ -464,9 +457,6 @@
 				AE6A2BDB1E175D48000030F9 /* NuclearBomb.mp3 */,
 				AE6A2BD91E175AF9000030F9 /* night.wav */,
 				AE6A2BD71E175975000030F9 /* QuickBomb.mp3 */,
-				AE3B55251E1324230022F068 /* Swoosh.wav */,
-				AE3B55261E1324230022F068 /* Swoosh.mp3 */,
-				AE3B55271E1324230022F068 /* Swish.caf */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -549,6 +539,7 @@
 				AE3B55761E1330600022F068 /* NavigationControllerExtension.swift */,
 				AE6548B81E085E7C008784E8 /* Main.storyboard */,
 				AE6548BD1E085E7C008784E8 /* LaunchScreen.storyboard */,
+				AE3B55241E1324180022F068 /* Sounds */,
 				AEA2CC3E1E16FF160015007B /* Birds */,
 				AE9AF8011E0CE08D0026D3ED /* Assets.xcassets */,
 				AE6548C01E085E7C008784E8 /* Info.plist */,
@@ -819,7 +810,6 @@
 				AE6A2BDC1E175D48000030F9 /* NuclearBomb.mp3 in Resources */,
 				AE3B551B1E1324090022F068 /* technicalexperience0.txt in Resources */,
 				AE6A2BE01E176760000030F9 /* bird.mp3 in Resources */,
-				AE3B55291E1324230022F068 /* Swoosh.mp3 in Resources */,
 				AE3B555C1E1324CE0022F068 /* personalinfo1.jpg in Resources */,
 				AE3B55711E1324D70022F068 /* technicalexperience1.jpg in Resources */,
 				AEA2CCAF1E17002F0015007B /* chicken1@3x.png in Resources */,
@@ -875,7 +865,6 @@
 				AE3B55231E1324090022F068 /* Education.txt in Resources */,
 				AE3B551F1E1324090022F068 /* technicalexperience4.txt in Resources */,
 				AE3B554D1E1324C60022F068 /* languagesC++.jpg in Resources */,
-				AE3B552A1E1324230022F068 /* Swish.caf in Resources */,
 				AE3B555D1E1324CE0022F068 /* personalinfo2.jpg in Resources */,
 				AE3B55491E1324C60022F068 /* interestsGolf.jpg in Resources */,
 				AEA2CCA21E16FF160015007B /* vulture3.png in Resources */,
@@ -899,7 +888,6 @@
 				AEA2CC801E16FF160015007B /* duck4.png in Resources */,
 				AE3B55151E1324090022F068 /* Publications.txt in Resources */,
 				AEA2CC041E16EDEA0015007B /* Bomb@2x.png in Resources */,
-				AE3B55281E1324230022F068 /* Swoosh.wav in Resources */,
 				AEA2CBE31E16EDEA0015007B /* Bullet0@3x.png in Resources */,
 				AEA2CC791E16FF160015007B /* chicken6.png in Resources */,
 				AE3B553B1E1324BC0022F068 /* education0.jpg in Resources */,

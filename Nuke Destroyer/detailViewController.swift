@@ -15,7 +15,6 @@ class detailViewController: UICollectionViewController {
     @IBOutlet weak var detailImage: UIImageView!
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var detailText: UILabel!
-
     
     var imageName: String!
     var text: String!
@@ -37,7 +36,7 @@ class detailViewController: UICollectionViewController {
         setLayoutFor(collectionView!, with: collectionView!.frame.size)
         
         self.navigationController?.navigationBar.backItem?.backBarButtonItem?.title = "Back"
-
+        
     }
     
     // ------------------------------------------------------------------------------------------
@@ -115,7 +114,10 @@ class detailViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! detailCollectionViewCell
+        cell.detailLabel.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: cell.frame.height)
+        cell.detailLabel.numberOfLines = 0
         
+        // the cell with the image and label
         if (indexPath.item == 0) {
             cell.detailImage.image = UIImage(named: imageName)
             
@@ -124,14 +126,30 @@ class detailViewController: UICollectionViewController {
             cell.detailLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: cell.frame.height / 10)
             cell.detailLabel.textColor = UIColor.white
             
+        // the other cell, with just the text
         } else {
             
-            if !(text.contains("Major")) {
-                cell.detailLabel.textAlignment = .left
-            }
+            // set the cells text
             cell.detailLabel.text = text
             cell.detailLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        
+            
+            // if in portrait, change the label position by using the sizeToFit method
+            let viewWidth = view.frame.width
+            let viewHeight = view.frame.height
+            
+            if viewHeight > viewWidth {
+                cell.detailLabel.sizeToFit()
+            }
+            
+            // if the text doesn't contain "Major" then make it left aligned
+            if !(text.contains("Major")) {
+                cell.detailLabel.textAlignment = .left
+            } else {
+                // if the text contains major, make sure the label width is equal to the cell width
+                // this makes it look better
+                let labelFrame = cell.detailLabel.frame
+                cell.detailLabel.frame = CGRect(x: 0, y: 0, width: cell.frame.width, height: labelFrame.height )
+            }
         }
         
         return cell

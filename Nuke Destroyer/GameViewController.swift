@@ -15,7 +15,6 @@ class GameViewController: UIViewController {
     // PARAMETERS
     // ------------------------------------------------------------------------------------------
     var currentGame: GameScene!
-    var wentToJTL: Bool = false
     var sceneLoaded: Bool = false
     
     // METHODS
@@ -83,7 +82,6 @@ class GameViewController: UIViewController {
     // ------------------------------------------------------------------------------------------
     
     func developerButtonTapped() {
-        wentToJTL = true
         performSegue(withIdentifier: "segueToJTL", sender: self)
     }
     
@@ -94,12 +92,7 @@ class GameViewController: UIViewController {
 
         navigationController?.isNavigationBarHidden = true
         navigationController?.hidesBarsOnSwipe = false
-        
-        if wentToJTL {
-            currentGame.checkForSound()
-        }
-        
-
+    
     }
     
     // ------------------------------------------------------------------------------------------
@@ -115,29 +108,17 @@ class GameViewController: UIViewController {
     
     // ------------------------------------------------------------------------------------------
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
     func appMovedToBackground() {
         print("App moved to background!")
         
         if currentGame.gameState == .playing {
-            currentGame.pauseGame()
+            currentGame.pauseGame(appMovedToBackground: true)
         }
         
-        
-    }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        /// the only time the view disappears is when it moves to JTL
-        currentGame.removeSound()
+        if currentGame.gameState == .gameOver {
+            currentGame.background.removeAllActions()
+            currentGame.showGameOverLogos(actionDuration: 0.0)
+        }
         
     }
     

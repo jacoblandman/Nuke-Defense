@@ -273,8 +273,9 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Sre-1y-4ad">
                                             <rect key="frame" x="0.0" y="0.0" width="357" height="248"/>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0t7-45-es6">
-                                            <rect key="frame" x="0.0" y="0.0" width="357" height="248"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0t7-45-es6">
+                                            <rect key="frame" x="0.0" y="7.460698725481052e-14" width="357" height="248"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
@@ -283,13 +284,9 @@
                                 </view>
                                 <constraints>
                                     <constraint firstItem="Sre-1y-4ad" firstAttribute="centerY" secondItem="ceV-fH-g0J" secondAttribute="centerY" id="Dwa-9B-8WY"/>
-                                    <constraint firstItem="0t7-45-es6" firstAttribute="height" secondItem="ceV-fH-g0J" secondAttribute="height" id="DyF-Jz-P6p"/>
                                     <constraint firstItem="Sre-1y-4ad" firstAttribute="width" secondItem="ceV-fH-g0J" secondAttribute="width" id="KvX-WF-z6j"/>
-                                    <constraint firstItem="0t7-45-es6" firstAttribute="centerY" secondItem="ceV-fH-g0J" secondAttribute="centerY" id="WDV-P6-FU2"/>
                                     <constraint firstItem="Sre-1y-4ad" firstAttribute="height" secondItem="ceV-fH-g0J" secondAttribute="height" id="Yjr-l8-HRy"/>
                                     <constraint firstItem="Sre-1y-4ad" firstAttribute="centerX" secondItem="ceV-fH-g0J" secondAttribute="centerX" id="nFu-Vw-rZL"/>
-                                    <constraint firstItem="0t7-45-es6" firstAttribute="width" secondItem="ceV-fH-g0J" secondAttribute="width" id="o4H-rt-ndx"/>
-                                    <constraint firstItem="0t7-45-es6" firstAttribute="centerX" secondItem="ceV-fH-g0J" secondAttribute="centerX" id="rSd-fd-DSL"/>
                                 </constraints>
                                 <size key="customSize" width="357" height="248"/>
                                 <connections>
