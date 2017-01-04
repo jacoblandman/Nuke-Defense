@@ -1,1 +1,0 @@
-Developed radiation transport methods using object-oriented programming in C++.
