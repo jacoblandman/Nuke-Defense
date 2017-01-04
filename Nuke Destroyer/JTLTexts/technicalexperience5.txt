@@ -1,0 +1,1 @@
+Texas A&M multidisciplinary project, which incorporated the use of GIS software and geoprocessing techniques to develop a model that locates the most suitable area for a nuclear waste repository, while minimizing risk of terrorist encounters. The model was developed using Python.

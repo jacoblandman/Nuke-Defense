@@ -380,7 +380,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // ------------------------------------------------------------------------------------------
     
     func createTurrets() {
-        scale = 0.75
+        //scale = 0.75
         let turretNumber = RandomInt(min: 1, max: 2)
         let imageName = "turret_".appending(String(turretNumber))
         let turretTexture = SKTexture(imageNamed: imageName)

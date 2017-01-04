@@ -1,0 +1,1 @@
+Designed a nuclear reactor in collaboration with NASA to provide surface power for long term expeditions to Mars. My work focused on thermal-hydraulic analysis of the reactor core, which was performed using OpenFOAM, an open source CFD code written in C++
