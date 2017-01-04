@@ -100,11 +100,20 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
             if UIApplication.shared.canOpenURL(url) {
                 // if the app is installed open it there
                 print("facebook is installed")
-                UIApplication.shared.open(url, options: [:])
+                if #available(iOS 10.0, *) {
+                    UIApplication.shared.open(url, options: [:])
+                } else {
+                    UIApplication.shared.openURL(url)
+                }
             } else {
                 // if the facebook app isn't installed open in safari
                 if let safariUrl = URL(string: "https://www.facebook.com/" + UID) {
-                    UIApplication.shared.open(safariUrl, options: [:])
+                    if #available(iOS 10.0, *) {
+                        UIApplication.shared.open(safariUrl, options: [:])
+                    } else {
+                        print("running openURL")
+                        UIApplication.shared.openURL(safariUrl)
+                    }
                 }
             }
         }
@@ -121,10 +130,18 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
             if UIApplication.shared.canOpenURL(url) {
                 // if the app is installed open it there
                 print("linkedin is installed")
-                UIApplication.shared.open(url, options: [:])
+                if #available(iOS 10.0, *) {
+                    UIApplication.shared.open(url, options: [:])
+                } else {
+                    UIApplication.shared.openURL(url)
+                }
             } else {
                 // if the facebook app isn't installed open in safari
-                UIApplication.shared.open(url, options: [:])
+                if #available(iOS 10.0, *) {
+                    UIApplication.shared.open(url, options: [:])
+                } else {
+                    UIApplication.shared.openURL(url)
+                }
             }
         }
     }
@@ -287,18 +304,7 @@ class InitialViewController: UIViewController, UINavigationControllerDelegate {
         }
         
     }
-    
-    // ------------------------------------------------------------------------------------------
-    
-    func removeLabelsAndButtons() {
-        nameLabel.removeFromSuperview()
         
-        iosButton.removeFromSuperview()
-        facebookButton.removeFromSuperview()
-        resumeButton.removeFromSuperview()
-        linkedinButton.removeFromSuperview()
-    }
-    
     // ------------------------------------------------------------------------------------------
     // this function sets values for the section table view
     // the dataType gets set, which informs the next view what text file to look at when loading the data

@@ -299,7 +299,11 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         ac.addAction(UIAlertAction(title: "Email", style: .default) { [] _ in
             if let url = URL(string: "mailto:jlandman@tamu.edu") {
-                UIApplication.shared.open(url, options: [:])
+                if #available(iOS 10.0, *) {
+                    UIApplication.shared.open(url, options: [:])
+                } else {
+                    UIApplication.shared.openURL(url)
+                }
             }
         })
         
@@ -314,7 +318,11 @@ class sectionCollectionViewController: UICollectionViewController, UICollectionV
         ac.addAction(UIAlertAction(title: "Call", style: .default) { [] _ in
             if let url = URL(string: "tel://8177347833") {
                 if UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url, options: [:])
+                    if #available(iOS 10.0, *) {
+                        UIApplication.shared.open(url, options: [:])
+                    } else {
+                        UIApplication.shared.openURL(url)
+                    }
                 }
             }
         })

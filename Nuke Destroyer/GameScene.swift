@@ -356,6 +356,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // we'll add the pause button here too
         pauseButton = SKSpriteNode(imageNamed: "pauseButton")
+        scale(pauseButton, using: scale)
         pauseButton.position = CGPoint(x: width - 10 - pauseButton.size.width, y: height - (10 + scoreFontSize + pauseButton.size.height))
         pauseButton.zPosition = 50
         pauseButton.alpha = 0.0
@@ -369,6 +370,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             soundButton = SKSpriteNode(imageNamed: "noSound")
         }
+        scale(soundButton, using: scale)
         soundButton.position = CGPoint(x: width - 10 - pauseButton.size.width, y: height - (10 + scoreFontSize + pauseButton.size.height))
         pauseButton.zPosition = 51
         soundButton.name = "soundButton"
@@ -380,7 +382,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // ------------------------------------------------------------------------------------------
     
     func createTurrets() {
-        //scale = 0.75
+  
         let turretNumber = RandomInt(min: 1, max: 2)
         let imageName = "turret_".appending(String(turretNumber))
         let turretTexture = SKTexture(imageNamed: imageName)
@@ -525,13 +527,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func createLogosAndButtons() {
         logo = SKSpriteNode(imageNamed: "Logo")
+        scale(logo, using: scale)
         logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
         logo.position = CGPoint(x: frame.midX, y: frame.midY + frame.height / 6)
         logo.name = "logo"
         addChild(logo)
         
-        let spacing: CGFloat = 15
+        print("scale mode is \(UIScreen.main.scale)")
+        let spacing: CGFloat = 5 * UIScreen.main.scale
         playButton = SKSpriteNode(imageNamed: "PlayButton")
+        scale(playButton, using: scale)
         //playButton.anchorPoint = CGPoint(x: 0.0, y: 1.0)
         playButton.position = CGPoint(x: logo.position.x - playButton.size.width * 0.5 - spacing, y: logo.position.y - (spacing + playButton.size.height * 0.5))
         playButton.name = "playButton"
@@ -539,6 +544,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(playButton)
         
         developerButton = SKSpriteNode(imageNamed: "DeveloperButton")
+        scale(developerButton, using: scale)
         //developerButton.anchorPoint = CGPoint(x: 1.0, y: 1.0)
         developerButton.position = CGPoint(x: logo.position.x + developerButton.size.width * 0.5 + spacing, y: logo.position.y - (spacing + playButton.size.height * 0.5))
         developerButton.name = "developerButton"
@@ -554,7 +560,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState == .playing {
             let bomb = SKSpriteNode(imageNamed: "Bomb")
             scale(bomb, using: scale)
-            let xPos = RandomCGFloat(min: Float(2.0 * bomb.size.width), max: Float(frame.size.width - 2.0 * bomb.size.width))
+            let xPos = RandomCGFloat(min: Float(2.5 * bomb.size.width), max: Float(frame.size.width - 2.5 * bomb.size.width))
             bomb.position = CGPoint(x: xPos, y: frame.size.height + bomb.size.height * 0.5)
             bomb.anchorPoint = CGPoint(x: 0.5, y: 0.5)
             bomb.physicsBody = SKPhysicsBody(rectangleOf: bomb.size)
@@ -733,6 +739,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background = SKSpriteNode(imageNamed: "Background")
         let backgroundSize = background.size
         scale = max(width / backgroundSize.width, height / backgroundSize.height)
+        print("scale is \(scale)")
         background.size = CGSize(width: backgroundSize.width * scale, height: backgroundSize.height * scale)
         background.position = CGPoint(x: width / 2.0 , y: height / 2.0)
         background.zPosition = -1
@@ -1026,6 +1033,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             if self.logo.parent == nil {
                 self.logo = SKSpriteNode(imageNamed: "GameOverLogo")
+                self.scale(self.logo, using: self.scale)
                 self.logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
                 self.logo.position = CGPoint(x: self.frame.midX, y: self.frame.size.height + self.logo.size.height)
                 self.logo.zPosition = 51
@@ -1077,6 +1085,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // only add the logo again if it isn't already there
         if logo.parent == nil {
             logo = SKSpriteNode(imageNamed: "PausedLogo")
+            self.scale(self.logo, using: self.scale)
             logo.anchorPoint = CGPoint(x: 0.5, y: 0.0)
             logo.position = CGPoint(x: frame.midX, y: frame.size.height + logo.size.height)
             logo.zPosition = 51
@@ -1283,11 +1292,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.background.run(fadeAlpha)
             //self.pauseButton.run(fadeAlpha)
         }
-        let fadeSound = SKAction.run { [unowned self] in
-            //self.soundButton.run(SKAction.fadeAlpha(to: 0.0, duration: 0.2))
-        }
         
-        self.run(fadeSound)
         playButton.run(moveDown)
         developerButton.run(SKAction.sequence([moveDown, wait, moveLogo, fadeBackground]))
         
