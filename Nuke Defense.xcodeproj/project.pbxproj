@@ -196,10 +196,7 @@
 		AE256F6D1E1DA6760031A083 /* night.wav in Resources */ = {isa = PBXBuildFile; fileRef = AE256EAA1E1DA6750031A083 /* night.wav */; };
 		AE256F6E1E1DA6760031A083 /* NuclearBomb.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AE256EAB1E1DA6750031A083 /* NuclearBomb.mp3 */; };
 		AE256F6F1E1DA6760031A083 /* QuickBomb.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AE256EAC1E1DA6750031A083 /* QuickBomb.mp3 */; };
-		AE256F701E1DA6760031A083 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE256EAE1E1DA6750031A083 /* Info.plist */; };
-		AE256F711E1DA6760031A083 /* Nuke_DestroyerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE256EAF1E1DA6750031A083 /* Nuke_DestroyerTests.swift */; };
-		AE256F721E1DA6760031A083 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE256EB11E1DA6750031A083 /* Info.plist */; };
-		AE256F731E1DA6760031A083 /* Nuke_DestroyerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE256EB21E1DA6750031A083 /* Nuke_DestroyerUITests.swift */; };
+		AE256F751E1DA73E0031A083 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE256F741E1DA73E0031A083 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -411,10 +408,7 @@
 		AE256EAA1E1DA6750031A083 /* night.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = night.wav; sourceTree = "<group>"; };
 		AE256EAB1E1DA6750031A083 /* NuclearBomb.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = NuclearBomb.mp3; sourceTree = "<group>"; };
 		AE256EAC1E1DA6750031A083 /* QuickBomb.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = QuickBomb.mp3; sourceTree = "<group>"; };
-		AE256EAE1E1DA6750031A083 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE256EAF1E1DA6750031A083 /* Nuke_DestroyerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nuke_DestroyerTests.swift; sourceTree = "<group>"; };
-		AE256EB11E1DA6750031A083 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE256EB21E1DA6750031A083 /* Nuke_DestroyerUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nuke_DestroyerUITests.swift; sourceTree = "<group>"; };
+		AE256F741E1DA73E0031A083 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
 		AE6548AB1E085E7C008784E8 /* Nuke Defense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Nuke Defense.app"; path = "/Users/jlandman/Library/Mobile Documents/com~apple~CloudDocs/Projects/iOS/Nuke Defense/build/Release-iphoneos/Nuke Defense.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -465,10 +459,11 @@
 		AE256DF11E1DA6750031A083 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				AE256DF51E1DA6750031A083 /* Birds */,
+				AE256F741E1DA73E0031A083 /* Default-568h@2x.png */,
 				AE256DF21E1DA6750031A083 /* Background@2x.png */,
 				AE256DF31E1DA6750031A083 /* Background@3x.png */,
 				AE256DF41E1DA6750031A083 /* BallTrail.sks */,
-				AE256DF51E1DA6750031A083 /* Birds */,
 				AE256E311E1DA6750031A083 /* Bomb@2x.png */,
 				AE256E321E1DA6750031A083 /* Bomb@3x.png */,
 				AE256E331E1DA6750031A083 /* Bullet0@2x.png */,
@@ -687,30 +682,10 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
-		AE256EAD1E1DA6750031A083 /* Nuke DefenseTests */ = {
-			isa = PBXGroup;
-			children = (
-				AE256EAE1E1DA6750031A083 /* Info.plist */,
-				AE256EAF1E1DA6750031A083 /* Nuke_DestroyerTests.swift */,
-			);
-			path = "Nuke DefenseTests";
-			sourceTree = "<group>";
-		};
-		AE256EB01E1DA6750031A083 /* Nuke DefenseUITests */ = {
-			isa = PBXGroup;
-			children = (
-				AE256EB11E1DA6750031A083 /* Info.plist */,
-				AE256EB21E1DA6750031A083 /* Nuke_DestroyerUITests.swift */,
-			);
-			path = "Nuke DefenseUITests";
-			sourceTree = "<group>";
-		};
 		AE6548A21E085E7C008784E8 = {
 			isa = PBXGroup;
 			children = (
 				AE256DE71E1DA6750031A083 /* Nuke Defense */,
-				AE256EAD1E1DA6750031A083 /* Nuke DefenseTests */,
-				AE256EB01E1DA6750031A083 /* Nuke DefenseUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -881,7 +856,6 @@
 				AE256F1E1E1DA6750031A083 /* turret_2@2x.png in Resources */,
 				AE256EC91E1DA6750031A083 /* duck2.png in Resources */,
 				AE256F181E1DA6750031A083 /* Star@2x.png in Resources */,
-				AE256F701E1DA6760031A083 /* Info.plist in Resources */,
 				AE256F3A1E1DA6750031A083 /* languagesFortran.jpg in Resources */,
 				AE256F621E1DA6760031A083 /* TechnicalExperienceDates.txt in Resources */,
 				AE256F301E1DA6750031A083 /* education1.jpg in Resources */,
@@ -898,7 +872,6 @@
 				AE256EEB1E1DA6750031A083 /* sparrow6.png in Resources */,
 				AE256F6B1E1DA6760031A083 /* bird.mp3 in Resources */,
 				AE256F471E1DA6750031A083 /* Publications.jpg in Resources */,
-				AE256F721E1DA6760031A083 /* Info.plist in Resources */,
 				AE256F171E1DA6750031A083 /* sound@3x.png in Resources */,
 				AE256F2F1E1DA6750031A083 /* education0.jpg in Resources */,
 				AE256ED51E1DA6750031A083 /* goose4.png in Resources */,
@@ -997,6 +970,7 @@
 				AE256EE71E1DA6750031A083 /* sparrow2.png in Resources */,
 				AE256F3F1E1DA6750031A083 /* languagesSwift.jpg in Resources */,
 				AE256F421E1DA6750031A083 /* personalinfo0.jpg in Resources */,
+				AE256F751E1DA73E0031A083 /* Default-568h@2x.png in Resources */,
 				AE256EFB1E1DA6750031A083 /* Bullet0@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1025,7 +999,6 @@
 				AE256F681E1DA6760031A083 /* tutorialCollectionViewCell.swift in Sources */,
 				AE256EB71E1DA6750031A083 /* GameScene.swift in Sources */,
 				AE256F241E1DA6750031A083 /* detailCollectionViewCell.swift in Sources */,
-				AE256F731E1DA6760031A083 /* Nuke_DestroyerUITests.swift in Sources */,
 				AE256F271E1DA6750031A083 /* HidingViewController.swift in Sources */,
 				AE256F641E1DA6760031A083 /* ResumeCollectionViewController.swift in Sources */,
 				AE256EB81E1DA6750031A083 /* GameViewController.swift in Sources */,
@@ -1035,7 +1008,6 @@
 				AE256F261E1DA6750031A083 /* HidingNavigationBarManager.swift in Sources */,
 				AE256F6A1E1DA6760031A083 /* NavigationControllerExtension.swift in Sources */,
 				AE256F661E1DA6760031A083 /* ResumeViewController.swift in Sources */,
-				AE256F711E1DA6760031A083 /* Nuke_DestroyerTests.swift in Sources */,
 				AE256F671E1DA6760031A083 /* sectionCollectionViewController.swift in Sources */,
 				AE256EB31E1DA6750031A083 /* AppDelegate.swift in Sources */,
 				AE256F251E1DA6750031A083 /* detailViewController.swift in Sources */,
