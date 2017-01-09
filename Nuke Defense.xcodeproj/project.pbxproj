@@ -216,8 +216,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AE256D241E1DA5F90031A083 /* Nuke DefenseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Nuke DefenseTests.xctest"; path = "/Users/jlandman/Library/Mobile Documents/com~apple~CloudDocs/Projects/iOS/Nuke Defense/build/Release-iphoneos/Nuke DefenseTests.xctest"; sourceTree = "<absolute>"; };
-		AE256D251E1DA5F90031A083 /* Nuke DefenseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Nuke DefenseUITests.xctest"; path = "/Users/jlandman/Library/Mobile Documents/com~apple~CloudDocs/Projects/iOS/Nuke Defense/build/Release-iphoneos/Nuke DefenseUITests.xctest"; sourceTree = "<absolute>"; };
 		AE256DE81E1DA6750031A083 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE256DE91E1DA6750031A083 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE256DEB1E1DA6750031A083 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -408,7 +406,9 @@
 		AE256EAB1E1DA6750031A083 /* NuclearBomb.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = NuclearBomb.mp3; sourceTree = "<group>"; };
 		AE256EAC1E1DA6750031A083 /* QuickBomb.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = QuickBomb.mp3; sourceTree = "<group>"; };
 		AE256F741E1DA73E0031A083 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../../Default-568h@2x.png"; sourceTree = "<group>"; };
-		AE6548AB1E085E7C008784E8 /* Nuke Defense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Nuke Defense.app"; path = "/Users/jlandman/Library/Mobile Documents/com~apple~CloudDocs/Projects/iOS/Nuke Defense/build/Release-iphoneos/Nuke Defense.app"; sourceTree = "<absolute>"; };
+		AEB1B1AD1E244E1D00E7D45A /* Nuke Defense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nuke Defense.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEB1B1AE1E244E1D00E7D45A /* Nuke DefenseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Nuke DefenseTests.xctest"; path = "/Users/jlandman/Library/Mobile Documents/com~apple~CloudDocs/Projects/iOS/Nuke Defense/build/Debug-iphoneos/Nuke DefenseTests.xctest"; sourceTree = "<absolute>"; };
+		AEB1B1AF1E244E1D00E7D45A /* Nuke DefenseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Nuke DefenseUITests.xctest"; path = "/Users/jlandman/Library/Mobile Documents/com~apple~CloudDocs/Projects/iOS/Nuke Defense/build/Debug-iphoneos/Nuke DefenseUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -685,6 +685,7 @@
 			isa = PBXGroup;
 			children = (
 				AE256DE71E1DA6750031A083 /* Nuke Defense */,
+				AEB1B1AD1E244E1D00E7D45A /* Nuke Defense.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -705,7 +706,7 @@
 			);
 			name = "Nuke Defense";
 			productName = "Nuke Destroyer";
-			productReference = AE6548AB1E085E7C008784E8 /* Nuke Defense.app */;
+			productReference = AEB1B1AD1E244E1D00E7D45A /* Nuke Defense.app */;
 			productType = "com.apple.product-type.application";
 		};
 		AE6548C41E085E7C008784E8 /* Nuke DefenseTests */ = {
@@ -723,7 +724,7 @@
 			);
 			name = "Nuke DefenseTests";
 			productName = "Nuke DestroyerTests";
-			productReference = AE256D241E1DA5F90031A083 /* Nuke DefenseTests.xctest */;
+			productReference = AEB1B1AE1E244E1D00E7D45A /* Nuke DefenseTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		AE6548CF1E085E7C008784E8 /* Nuke DefenseUITests */ = {
@@ -741,7 +742,7 @@
 			);
 			name = "Nuke DefenseUITests";
 			productName = "Nuke DestroyerUITests";
-			productReference = AE256D251E1DA5F90031A083 /* Nuke DefenseUITests.xctest */;
+			productReference = AEB1B1AF1E244E1D00E7D45A /* Nuke DefenseUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
