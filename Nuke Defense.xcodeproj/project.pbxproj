@@ -118,7 +118,6 @@
 		AE256F1F1E1DA6750031A083 /* turret_2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE256E581E1DA6750031A083 /* turret_2@3x.png */; };
 		AE256F201E1DA6750031A083 /* turret_2_sheet@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE256E591E1DA6750031A083 /* turret_2_sheet@2x.png */; };
 		AE256F211E1DA6750031A083 /* turret_2_sheet@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AE256E5A1E1DA6750031A083 /* turret_2_sheet@3x.png */; };
-		AE256F221E1DA6750031A083 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE256E5B1E1DA6750031A083 /* Info.plist */; };
 		AE256F231E1DA6750031A083 /* dataCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE256E5D1E1DA6750031A083 /* dataCollectionViewCell.swift */; };
 		AE256F241E1DA6750031A083 /* detailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE256E5E1E1DA6750031A083 /* detailCollectionViewCell.swift */; };
 		AE256F251E1DA6750031A083 /* detailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE256E5F1E1DA6750031A083 /* detailViewController.swift */; };
@@ -829,7 +828,6 @@
 				AE256F1C1E1DA6750031A083 /* turret_1_sheet@2x.png in Resources */,
 				AE256EBA1E1DA6750031A083 /* Background@2x.png in Resources */,
 				AE256F381E1DA6750031A083 /* Languages.jpg in Resources */,
-				AE256F221E1DA6750031A083 /* Info.plist in Resources */,
 				AE256EFA1E1DA6750031A083 /* Bullet0@2x.png in Resources */,
 				AE256EE31E1DA6750031A083 /* owl8.png in Resources */,
 				AE256F311E1DA6750031A083 /* file-document-7.png in Resources */,
@@ -1163,7 +1161,7 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = E294R2UKFW;
-				INFOPLIST_FILE = "Nuke Destroyer/Info.plist";
+				INFOPLIST_FILE = "Nuke Defense/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobtaylorlandman.SSB.NukeDefense;
@@ -1179,7 +1177,7 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = E294R2UKFW;
-				INFOPLIST_FILE = "Nuke Destroyer/Info.plist";
+				INFOPLIST_FILE = "Nuke Defense/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobtaylorlandman.SSB.NukeDefense;
